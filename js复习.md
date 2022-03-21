@@ -8,7 +8,14 @@ js中有8种数据类型
 
 引用类型：object	function	
 
+**js几种类型的值**
 
+- 栈：原始数据类型（`Undefined`，`Null`，`Boolean`，`Number`、`String`）
+- 堆：引用数据类型（对象、数组和函数）
+- 两种类型的区别是：存储位置不同；
+- 原始数据类型直接存储在栈(`stack`)中的简单数据段，占据空间小、大小固定，属于被频繁使用数据，所以放入栈中存储；
+- 引用数据类型存储在堆(`heap`)中的对象,占据空间大、大小不固定,如果存储在栈中，将会影响程序运行的性能；引用数据类型在栈中存储了指针，该指针指向堆中该实体的起始地址。当解释器寻找引用值时，会首先检索其
+- 在栈中的地址，取得地址后从堆中获得实体
 
 # 2. 对象深浅克隆（头条）
 
@@ -437,3 +444,183 @@ promise.then(onFulfilled, onRejected)
 - `If` 语句必须使用大括号
 - `for-in` 循环中的变量应该使用 `var` 关键字明确限定作用域，从而避免作用域污染
 
+
+
+# 26. javascript创建对象的几种方式
+
+> `JavaScript` 创建对象简单的说，无非就是使用内置对象或各种自定义对象，当然还可以用 `JSON` 。
+
+- 对象字面量
+
+~~~js
+person={firstname:"Mark",lastname:"Yun",age:25,eyecolor:"black"};
+~~~
+
+- 用 `function` 来模拟无参的构造函数
+
+~~~js
+function Person(){}
+	var person=new Person();//定义一个function，如果使用new"实例化",该function可以看作是一个Class
+        person.name="Mark";
+        person.age="25";
+        person.work=function(){
+        alert(person.name+" hello...");
+}
+person.work();
+~~~
+
+- 用 `function` 来模拟有参构造函数来实现（用 `this` 关键字定义构造的上下文属性）
+
+~~~js
+function Pet(name,age,hobby){
+       this.name=name;//this作用域：当前对象
+       this.age=age;
+       this.hobby=hobby;
+       this.eat=function(){
+           alert("我叫"+this.name+",我喜欢"+this.hobby+",是个程序员");
+       }
+}
+var maidou =new Pet("麦兜",25,"coding");//实例化、创建对象
+maidou.eat();//调用eat方法
+~~~
+
+- 用工厂方式来创建（内置对象）
+
+~~~js
+var wcDog =new Object();
+     wcDog.name="旺财";
+     wcDog.age=3;
+     wcDog.work=function(){
+       alert("我是"+wcDog.name+",汪汪汪......");
+     }
+     wcDog.work();
+~~~
+
+- 用原型方式来创建
+
+~~~js
+function Dog(){}
+Dog.prototype.name="旺财";
+Dog.prototype.eat=function(){
+	alert(this.name+"是个吃货");
+}
+var wangcai =new Dog();
+wangcai.eat();
+~~~
+
+- 用混合方式来创建
+
+~~~js
+ function Car(name,price){
+	this.name=name;
+	this.price=price;
+}
+Car.prototype.sell=function(){
+	alert("我是"+this.name+"，我现在卖"+this.price+"万元");
+}
+var camry =new Car("凯美瑞",27);
+camry.sell();
+~~~
+
+
+
+# 27. eval是做什么的
+
+- 它的功能是把对应的字符串解析成 `js` 代码并运行
+- 应该避免使用 `eval` ,不安全，非常耗费性能（2次，一次解析成 `js` 语句，一次执行）
+- 由 `JSON` 字符串转换为 `JSON` 对象的时候可以用 `eval`  ，`let obj = eval('('+str+')')`
+
+
+
+# 28. null,undefined 的区别
+
+- `undefined` 表示不存在这个值
+- `undefined` 是一个表示“无”的原始值或者说表示“缺少值”，就是此处应该有一个值，但是还没有定义。当尝试读取时会返回 `undefined`
+- 例如变量被声明了，但没有赋值时，就等于 `undefined`
+- `null` 表示一个对象被定义了，值为“空值”
+- `null` 是一个对象（空对象，没有任何属性和方式）
+- 例如作为函数的参数，表示该函数的参数不是对象
+- 在验证 `null` 时，一定要用 `===` ，因为 `==` 无法分别 `null` 和 `undefined`
+
+
+
+# 29. ["1", "2", "3"].map(parseInt) 答案是多少
+
+- `[1,NaN,NaN]` 因为 `parseInt` 需要两个参数 `(val,radix)` ，其中 `radix` 表示解析时用的参数
+- `map` 穿了 3 个 `(element,index,array)`,对应的 `raidx` 不合法导致解析失败返回 `NaN`
+- 失败原因：
+  - 当传入 `("2",1)` 时，因为 `parseInt` 要求 `radix` 范围为 2~36 ，所有传入的 `radix` 不合法返回 `NaN`
+  - 当传入 `("3",2)` 时，即把 `"3"` 从二进制转换为十进制，2进制中没有 3 ，所以不合法返回NaN
+
+
+
+# 30. javascript 代码中的"use strict";是什么意思
+
+- `use strict`是一种`ECMAscript 5` 添加的（严格）运行模式,这种模式使得 Javascript 在更严格的条件下运行,使`JS`编码更加规范化的模式,消除`Javascript`语法的一些不合理、不严谨之处，减少一些怪异行为
+
+
+
+# 31. JSON的了解
+
+- `JSON(JavaScript Object Notation)` 是一种轻量级的数据交换格式
+- 它是基于`JavaScript`的一个子集。数据格式简单, 易于读写, 占用带宽小
+- `JSON`字符串转换为JSON对象:
+
+```javascript
+var obj = eval('('+ str +')');
+var obj = str.parseJSON();
+var obj = JSON.parse(str);
+```
+
+- `JSON`对象转换为JSON字符串：
+
+```js
+var last = obj.toJSONString();
+var last = JSON.stringify(obj);
+```
+
+
+
+# 32. js延迟加载的方式有哪些
+
+- 设置 `<script>` 属性 `defer="defer"` （脚本将在页面完成解析时执行）
+
+- 动态创建 `script DOM`：`document.createElement('script');`
+
+- `XmlHttpRequest` 脚本注入
+
+- 延迟加载工具 `LazyLoad`
+
+  
+
+# 33. defer和async
+
+- `defer`并行加载`js`文件，会按照页面上`script`标签的顺序执行
+- `async`并行加载`js`文件，下载完成立即执行，不会按照页面上`script`标签的顺序执行
+
+
+
+# 34. 同步和异步的区别
+
+- 同步：浏览器访问服务器请求，用户看得到页面刷新，重新发请求,等请求完，页面刷新，新内容出现，用户看到新内容,进行下一步操作
+- 异步：浏览器访问服务器请求，用户正常操作，浏览器后端进行请求。等请求完，页面不刷新，新内容也会出现，用户看到新内容
+
+
+
+# 35. 说说严格模式的限制
+
+- 变量必须声明后再使用
+- 函数的参数不能有同名属性，否则报错
+- 不能使用 `with` 语句
+- 不能对只读属性赋值，否则报错
+- 不能使用前缀0表示八进制数，否则报错
+- 不能删除不可删除的属性，否则报错
+- 不能删除变量`delete prop`，会报错，只能删除属性`delete global[prop]`
+- `eval`不会在它的外层作用域引入变量
+- `eval`和`arguments`不能被重新赋值
+- `arguments`不会自动反映函数参数的变化
+- 不能使用`arguments.callee`
+- 不能使用`arguments.caller`
+- 禁止`this`指向全局对象
+- 不能使用`fn.caller`和`fn.arguments`获取函数调用的堆栈
+- 增加了保留字（比如`protected`、`static`和`interface`）
