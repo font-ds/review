@@ -201,7 +201,7 @@ a.consutructor.prototpe == a.__proto__
 
 - **原型**
   - `JavaScript` 的所有对象中都包含了一个 `[__proto__]` 内部属性，这个属性所对应的就是该对象的原型
-  - `JavaScript` 的函数对象，除了原型 `[__proto__]` 之外，害预置了 `prototype` 属性
+  - `JavaScript` 的函数对象，除了原型 `[__proto__]` 之外，还预置了 `prototype` 属性
   - 当函数对象作为构造函数创造实例时，该 `prototype` 属性值将被作为实例对象的原型 `[__proto__]`
 - **原型链**
   - 当一个对象调用的属性/方法自身不存在时，就会去自己 `[__proto__]` 关联的前辈 `prototype` 对象上去找
@@ -216,6 +216,35 @@ a.consutructor.prototpe == a.__proto__
 - 事件代理（`Event Delegation`），又称之为事件委托。是 `JavaScript` 中常用绑定事件的常用技巧。顾名思义，“事件代理”即是把原本需要绑定的事件委托给父元素，让父元素担任事件监听的职责。事件代理的原理是DOM元素的事件冒泡。使用事件代理的好处是可以提高性能
 - 可以大量节省内存占用，减少事件注册。比如在 `table` 上代理所有 `td` 的 `click` 事件就非常棒
 - 可以实现当新增子对象时无需再次对其绑定
+
+~~~html
+ 	<ul id="ul1">
+        <li id="item1">item1</li>
+        <li id="item2">item2</li>
+        <li  id="item3">item3</li>
+    </ul>
+    <script>
+        window.onload= function () {
+        var ul=document.getElementById("ul1");
+
+        ul.onclick= function (event) {
+            var e=event||window.event;
+            var event= e.target || e.srcElement;     // e.srcElement 时IE里的属性
+            switch (event.id){
+                case "item1":
+                    alert("item1");
+                    break;
+                case "item2":
+                    alert("item2");
+                    break;
+                case "item3":
+                    alert("item3");
+                    break;
+            }
+        }
+    }
+    </script>
+~~~
 
 
 
@@ -242,7 +271,7 @@ let demo = new Child()
 console.log(demo.age,demo.name)
 ~~~
 
-[参考 - js六种继承]([JavaScript是如何实现继承的(六种方式)_javascript技巧_脚本之家 (jb51.net)](https://www.jb51.net/article/81766.htm))
+[JavaScript是如何实现继承的(六种方式)_javascript技巧_脚本之家 (jb51.net)](https://www.jb51.net/article/81766.htm)
 
 # 13. this对象的理解
 
@@ -250,11 +279,19 @@ console.log(demo.age,demo.name)
 - 如果有 `new` 关键字，`this` 指向 `new` 出来的那个对象
 - 在事件中，`this` 指向触发这个事件的对象
 
+**this指向**
 
+- `this` 的指向在函数定义的时候是确定不了的，只有函数执行的时候才能确定 `this` 到底指向谁，实际上 `this` 的最终指向的是那个调用它的对象
+- 《javascript语言精髓》中大概概括了4种调用方式：
+- 方法调用模式
+- 函数调用模式
+- 构造器调用模式
+
+- `apply / call` 调用模式
 
 # 14. 事件模型
 
-> `w3c` 中定义事件的发生经历三个阶段：捕获阶段（`capturing`）、目标阶段（`targetin`）、冒泡阶段（`bubbling`）
+> `W3C` 中定义事件的发生经历三个阶段：捕获阶段（`capturing`）、目标阶段（`targetin`）、冒泡阶段（`bubbling`）
 
 - 冒泡型事件：当你使用事件冒泡时，子级元素先触发，父级元素后触发
 - 捕获型事件：当你使用事件捕获时，父级元素先触发，子级元素后触发
@@ -317,7 +354,7 @@ xhr.onreadystatechange = function(){
 - 动态创建 `script DOM` : `document.createElement('script')`
 - `XmlHttpRequest` 脚本注入
 - 异步加载库 `LABjs`
-- 模块记载器 `Sea.js`
+- 模块加载器 `Sea.js`
 
 
 
@@ -460,11 +497,11 @@ person={firstname:"Mark",lastname:"Yun",age:25,eyecolor:"black"};
 
 ~~~js
 function Person(){}
-	var person=new Person();//定义一个function，如果使用new"实例化",该function可以看作是一个Class
-        person.name="Mark";
-        person.age="25";
-        person.work=function(){
-        alert(person.name+" hello...");
+var person=new Person();//定义一个function，如果使用new"实例化",该function可以看作是一个Class
+person.name="Mark";
+person.age="25";
+person.work=function(){
+   alert(person.name+" hello...");
 }
 person.work();
 ~~~
@@ -488,12 +525,12 @@ maidou.eat();//调用eat方法
 
 ~~~js
 var wcDog =new Object();
-     wcDog.name="旺财";
-     wcDog.age=3;
-     wcDog.work=function(){
-       alert("我是"+wcDog.name+",汪汪汪......");
-     }
-     wcDog.work();
+wcDog.name="旺财";
+wcDog.age=3;
+wcDog.work=function(){
+   alert("我是"+wcDog.name+",汪汪汪......");
+}
+wcDog.work();
 ~~~
 
 - 用原型方式来创建
@@ -538,7 +575,7 @@ camry.sell();
 - `undefined` 是一个表示“无”的原始值或者说表示“缺少值”，就是此处应该有一个值，但是还没有定义。当尝试读取时会返回 `undefined`
 - 例如变量被声明了，但没有赋值时，就等于 `undefined`
 - `null` 表示一个对象被定义了，值为“空值”
-- `null` 是一个对象（空对象，没有任何属性和方式）
+- `null` 是一个对象（空对象，没有任何属性和方法）
 - 例如作为函数的参数，表示该函数的参数不是对象
 - 在验证 `null` 时，一定要用 `===` ，因为 `==` 无法分别 `null` 和 `undefined`
 
@@ -715,7 +752,7 @@ let isType = function(obj){
 
 
 
-# 52. let和var的区别
+# 41. let和var的区别
 
 - `let` 命令不存在变量提升，如果在 `let` 前使用，会导致报错
 - 如果块区中存在 `let` 和 `const` 命令，就会形成闭合作用域
@@ -723,7 +760,7 @@ let isType = function(obj){
 
 
 
-# 53. cookie和session的区别及session的生命周期
+# 42. cookie和session的区别及session的生命周期
 
 **区别**
 
@@ -739,3 +776,124 @@ let isType = function(obj){
 - 但我们第一次访问服务器时，服务器会给我们自动创建一个 `session` ，生成 `session` 后，只要用户继续访问，服务器就会更新 `session` 的最后访问时间，并且维护这个 `session`
 - 当用户访问服务器一次，无论是否读完了 `session` ，服务器都会认定这个`session` 活跃了一次，当越来越多的用户访问服务器时，`session` 会越来越多。
 - 为了防止内存溢出，服务器会把长时间没有活跃的 `session` 删除。这个时间就是 `session` 的超时时间，过了超时时间，我们的`session` 就会自动失效
+
+
+
+# 43. map与forEach的区别
+
+- `forEach` 方法，是最基本的方法，就是遍历和循环，默认有三个传参：分别是遍历的数组内容 `item` 、数组索引 `index` 、和当前遍历数组 `Array` 
+- `map` 方法，基本用法与 `forEach` 一致，但是不同的，它会返回一个新的数组，所以在callback需要有 `return` 值，如果没有。会返回 `undefined`
+
+
+
+# 44. 谈一谈对函数式编程的理解
+
+- 简单说，“函数式编程”是一种“编程范式”，也就是如何编写程序的方法论
+- 它具有以下特性：闭包和高阶函数、惰性计算、递归、函数是“第一等公民”、只用“表达式”
+- 函数式编程更加强调程序执行的结果而非执行的过程，倡导利用若干简单的执行单元让计算结果不断渐进，逐层推导复杂的运算，而非设计一个复杂的执行过程
+- 简单来讲，就是要把过程逻辑写成函数，定义好输入参数，只关心它的输出结果。即是一种描述集合和集合之间的转换关系，输入通过函数都会返回有且只有一个输出值
+
+
+
+# 45. 箭头函数与普通函数的区别
+
+- 语法更加简洁、清晰
+- 箭头函数不会创建自己的 `this`
+
+> 箭头函数不会创建自己的this,所以它没有自己的this，它只会从自己的作用域链的上一层继承this。
+
+> 箭头函数没有自己的`this`，它会捕获自己在**定义时**（注意，是定义时，不是调用时）所处的**外层执行环境的`this`**，并继承这个`this`值。所以，箭头函数中`this`的指向在它被定义的时候就已经确定了，之后永远不会改变。
+
+- 箭头函数继承而来的 `this` 指向永远不变
+- `call / apply / bind ` 无法改变箭头函数中 `this` 的指向
+
+- 箭头函数不能作为构造函数使用
+- 箭头函数没有自己的 `arguments` ，可以在箭头函数中使用 `rest (...变量名)` 参数代替
+- 箭头函数没有原型 `prototype`
+
+- 箭头函数不用作 `Generator` 函数，不能使用 `yelid` 关键字
+  - 因为标准规范定义了生成器必须是 `function*` 。箭头函数就无法匹配这个token
+
+
+
+# 46. 异步编程的实现方式
+
+- 回调函数
+  - 优点：简单，容易理解
+  - 缺点：不利于维护，代码耦合高
+- 事件监听（采用时间驱动模式，取决于某个事件是否发生）
+  - 优点：容易理解，可以绑定多个事件，每个事件可以指定多个回调函数
+  - 缺点：事件驱动型，流程不够清晰
+- 发布/订阅(观察者模式)
+  - 类似于事件监听，但是可以通过‘消息中心’，了解现在有多少发布者，多少订阅者
+- `Promise` 对象
+  - 优点：可以利用 `then` 方法，进行链式写法；可以书写错误时的回调函数；
+  - 缺点：编写和理解，相对比较难
+- `Generator` 函数
+  - 在函数的执行过程中,将函数的执行权转义出去,在函数外部还可以将执行权给转移回来。
+  - 优点：函数体内外的数据交换、错误处理机制
+  - 缺点：流程管理不方便
+- `async` 函数
+  - `async` 函数是 `generator` 和 `promise` 实现的一个自动执行的语法糖,它内部自带执行器,当函数内部执行到一个 `await` 语句的时候,如果语句返回一个 `promise` 对象,那么函数将会等待 `promise` 对象的状态变为 `resolve` 后再继续向下执行
+  - 优点：内置执行器、更好的语义、更广的适用性、返回的是 `Promise`、结构清晰。
+  - 缺点：错误处理机制
+
+
+
+# 47. JS动画与CSS动画区别及相应实现
+
+- `CSS3`的动画的优点
+  - 在性能上会稍微好一些，浏览器会对`CSS3`的动画做一些优化
+  - 代码相对简单
+- 缺点
+  - 在动画控制上不够灵活
+  - 兼容性不好
+- `JavaScript`的动画正好弥补了这两个缺点，控制能力很强，可以单帧的控制、变换，同时写得好完全可以兼容`IE6`，并且功能强大。对于一些复杂控制的动画，使用`javascript`会比较靠谱。而在实现一些小的交互动效的时候，就多考虑考虑`CSS`吧
+
+
+
+# 48. JS 数组和对象的遍历方式，以及几种方式的比较
+
+> 通常我们会用循环的方式来遍历数组。但是循环是 导致js 性能问题的原因之一。一般我们会采用下几种方式来进行数组的遍历
+
+- `for in `循环
+- `for` 循环
+- `forEach`
+  - 这里的 `forEach`回调中两个参数分别为 `value`，`index`
+  - `forEach` 无法遍历对象
+  - IE不支持该方法；`Firefox` 和 `chrome` 支持
+  - `forEach` 无法使用 `break`，`continue` 跳出循环，且使用 `return` 是跳过本次循环
+- 这两种方法应该非常常见且使用很频繁。但实际上，这两种方法都存在性能问题
+- 在方式一中，`for-in`需要分析出`array`的每个属性，这个操作性能开销很大。用在 `key` 已知的数组上是非常不划算的。所以尽量不要用`for-in`，除非你不清楚要处理哪些属性，例如 `JSON`对象这样的情况
+- 在方式2中，循环每进行一次，就要检查一下数组长度。读取属性（数组长度）要比读局部变量慢，尤其是当 `array` 里存放的都是 `DOM` 元素，因为每次读取都会扫描一遍页面上的选择器相关元素，速度会大大降低
+
+
+
+# 49. 事件的各个阶段
+
+- 1：捕获阶段 ---> 2：目标阶段 ---> 3：冒泡阶段
+- `document`  --->  `target` 目标  --->  `document`
+- 由此，`addEventListener` 的第三个参数设置为 `true` 和 `false` 的区别已经非常清晰了
+  - `true` 表示该元素在事件的 “捕获阶段” (由外向内传递时) 响应事件
+  - `false` 表示该元素在事件的 “冒泡阶段” (由内向外传递时) 响应事件
+
+
+
+# 50. let var const
+
+**let**
+
+- 允许声明一个作用域被限制在块级中的变量、语句或者表达式
+- `let` 绑定不受变量提升的约束，这意味着 `let` 声明不会被提升到当前
+- 该变量处于从块开始到初始化处理的“暂存死区”
+
+**var**
+
+- 声明变量的作用域限制在其声明位置的上下文中，而非声明变量总是全局的
+- 由于变量声明（以及其他声明）总是在任意代码执行之前处理的，所以在代码中的任意位置声明变量总是等效于在代码开头声明
+
+**const**
+
+- 声明创建一个值的只读引用 (即指针)
+- 基本数据当值发生改变时，那么其对应的指针也将发生改变，故造成 `const`声明基本数据类型时，再将其值改变时，将会造成报错
+- 但是如果是复合类型时，如果只改变复合类型的其中某个`Value`项时， 将还是正常使用
