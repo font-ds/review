@@ -200,7 +200,7 @@ background-color:red
 
 
 
-# 6. line-height和height区别
+# 6. line-height 和 height 区别
 
 1. height就是元素的高度值，是一个死值，就是这个盒子的高度
 
@@ -213,19 +213,21 @@ background-color:red
 ## css选择符
 
 	1. 通配（*）
-	1. 选择器（#）
-	1. 类选择器（.）
-	1. 标签选择器（div、p、h1...）
-	1. 相邻选择器（+）
-	1. 后代选择器（空格）
-	1. 子元素选择器（>）
-	1. 属性选择器（a[href]）
+	2. 选择器（#）
+	3. 类选择器（.）
+	4. 标签选择器（div、p、h1...）
+	5. 相邻选择器（+）
+	6. 后代选择器（空格）
+	7. 子元素选择器（>）
+	8. 属性选择器（a[href]）
 
 ## css属性哪些可以继承
 
-​		文字系列：font-size、color、line-height、text-align、opacity ......
+​		文字系列：font-size、color、line-height、text-align、opacity ......                 
 
 **不可继承**：border、padding、margin ......
+
+[CSS有哪些继承元素](# 54. CSS有哪些继承属性)
 
 
 
@@ -237,15 +239,21 @@ background-color:red
 
 1. !important —— 最高权值
 
-	2. 内联样式 style —— 权重值：1000
-	2. ID选择器 —— 权重值：100
-	2. Class选择器 —— 权重值：10
-	2. HTML标签选择器&伪元素 —— 权重值：1
-	2. 通配符选择器 —— 权重值：0
+2. 内联样式 style —— 权重值：1000
+
+2. ID选择器 —— 权重值：100
+
+2. Class选择器 —— 权重值：10
+
+2. HTML标签选择器&伪元素 —— 权重值：1
+
+2. 通配符选择器 —— 权重值：0
+
+   
 
 # 9. 盒子水平垂直居中
 
-这种需求在我之前的项目中十分常见，随着flex兴起，，后来看blog发现这种方式也十分好
+这种需求在我之前的项目中十分常见，随着flex兴起，后来看blog发现这种方式也十分好
 
 ```shell
 //1、定位
@@ -281,7 +289,7 @@ body{
   height:500px;
   display:table-ceil;
   vertical-align:center;
-  text-align:center;ß
+  text-align:center;
 }
 .box{
   display:inline-block;
@@ -290,7 +298,7 @@ body{
 
 ```
 
-#### 
+
 
 # 10. CSS画三角形
 
@@ -313,10 +321,10 @@ div{
 - `block` 转换成块状元素。
 - `inline` 转换成行内元素。
 - `none` 设置元素不可见。
-- `inline-block` 象行内元素一样显示，但其内容象块类型元素一样显示。
+- `inherit` 规定应该从父元素继承 `display` 属性的值
+- `inline-block` 像行内元素一样显示，但其内容象块类型元素一样显示。
 - `list-item` 象块类型元素一样显示，并添加样式列表标记。
 - `table` 此元素会作为块级表格来显示
-- `inherit` 规定应该从父元素继承 `display` 属性的值
 
 # 12. 清除浮动
 
@@ -632,7 +640,7 @@ a{
 - 移除空格
 - 使用`margin`负值
 - 为父元素中设置`font-size: 0`，在子元素上重置正确的`font-size`
-- `letter-spacing`
+- `letter-spacing `     属性增加或减少字符间的空白
 - 设置父元素，`display:table` 和 `word-spacing`
 
 
@@ -668,6 +676,8 @@ a{
 
 - 单冒号(`:`)用于`CSS3`伪类，双冒号(`::`)用于`CSS3`伪元素
 - 用于区分伪类和伪元素
+
+[伪类与伪元素区别](# 39. 伪类和伪元素的区别)
 
 
 
@@ -708,8 +718,20 @@ a{
 
 # 35. base64的原理及优缺点
 
-- 优点可以加密，减少了`HTTTP`请求
-- 缺点是需要消耗`CPU`进行编解码
+Base64是一种基于64个可打印字符来表示二进制数据的编码方式，是从二进制数据到字符的过程。
+原则上，计算机中所有内容都是二进制形式存储的，所以所有内容（包括文本、影音、图片等）都可以用base64来表示。
+
+- 原理
+  - Base64编码之所以称为Base64，是因为其使用64个字符来对任意数据进行编码
+- 优缺点
+  - 优点
+    - 可以加密，减少了`HTTTP`请求
+    - base64编码的字符串，更适合不同平台、不同语言的传输
+  - 缺点
+    - 需要消耗`CPU`进行编解码
+    - base64格式的文本内容较多，转换后的大小会增加
+    - 网页加载图片虽然不用访问服务器了，但因为base64格式的内容太多，所以加载网页的速度会降低，可能会影响用户的体验
+    - base64无法缓存，要缓存只能缓存包含base64的文件
 
 
 
@@ -747,7 +769,34 @@ a{
 - 伪元素 -- 在内容元素的前后插入额外的元素或样式，但是这些元素实际上并不在文档中生成
 - 前者单冒号，后者双冒号
 
+**伪元素**
 
+- `:before` 和 `:after` 用法
+  - 在真正页面元素内部之前和之后添加新内容，伪元素 `:before` 和 `:after` 添加的内容默认是 `inline` 元素；设置 `:before` 和 `:after` 时必须设置其 `content` 属性，否则伪元素就不起作用。
+  - `content` 属性的值应该有哪些
+    - 字符串，字符串作为伪元素的内容添加到主元素中 （字符串中若有html字符串，添加到主元素后不会进行 `html` 转义，也不会转化为真正的 `html` 内容显示，而是会原样输出）
+    - `attr (attr_name)`，伪元素的内容跟主元素的某个属性值进行关联，以及内容为主元素的某指定属性的值
+    - `url()/uri()`，引用外部资源
+    - `counter()`，调用计时器，可以不使用列表元素实现序号问题
+- `:before` 和 `:after` 特点
+  - 伪元素不属于文档，所以 js 无法操作它
+  - 伪元素属于主元素的一部分，因此点击伪元素触发的是主元素的 `click` 事件
+  - 说块级元素才能有`:before`, `:after`，其实是不妥的，大部分行级元素也可以设置伪元素，但是像img可替换元素，因为其外观和尺寸有外部资源决定，那么如果外部资源正确加载，就会替换掉其内部内容，这时伪元素也会被替换掉，但是当外部资源加载失败时，设置的伪元素是可以起作用的。
+- 优点
+  - 减少 `DOM `节点数
+  - 让 `CSS` 帮助解决部分js问题，让问题变得简单
+- 缺点
+  - 不利于 `SEO`
+  - 无法审查元素，不利于调试
+- 常用使用场景 [伪元素详解]([css伪元素:before和:after用法详解 - wonyun - 博客园 (cnblogs.com)](https://www.cnblogs.com/wonyun/p/5807191.html))
+  - 清除浮动
+  - 利用 `attr()` 来实现某些动态功能
+  - 与 `counter()` 结合实现序号问题，而不用使用列表元素
+  - 特效使用
+
+**伪类**
+
+- `CSS` 伪类是添加到选择器的关键字，指定要选择的元素的特殊状态。
 
 # 40. 请用CSS写一个简单的幻灯片效果页面
 
@@ -809,8 +858,19 @@ a{
 
 # 41. rgba()和opacity的透明效果有什么不同？
 
-- `rgba()`和`opacity`都能实现透明效果，但最大的不同是`opacity`作用于元素，以及元素内的所有内容的透明度，
+- `rgba()`和`opacity`都能实现透明效果，但最大的不同是`opacity`作用于元素，以及元素内的所有内容的透明度
+
+  - 取值在0到1之间，0表示完全透明，1表示完全不透明。
+
 - 而`rgba()`只作用于元素自身的颜色或其背景色。（设置`rgba`透明的元素的子元素不会继承透明效果！）
+
+  - rgba中的R表示红色，G表示绿色，B表示蓝色，三种颜色的值都可以是正整数或百分数。A表示Alpha透明度。取值0~1之间，类似opacity
+
+  ~~~css
+  .aa{background: rgba(255,0,0,0.5);}
+  ~~~
+
+  
 
 
 
@@ -834,7 +894,7 @@ a{
 # 44. Sass、LESS是什么？大家为什么要使用他们？
 
 - 他们是`CSS`预处理器。他是`CSS`上的一种抽象层。他们是一种特殊的语法/语言编译成`CSS`。
-- 例如Less是一种动态样式语言. 将CSS赋予了动态语言的特性，如变量，继承，运算， 函数. `LESS` 既可以在客户端上运行 (支持`IE 6+`, `Webkit`, `Firefox`)，也可一在服务端运行 (借助 `Node.js`)
+- 例如 `Less` 是一种动态样式语言. 将CSS赋予了动态语言的特性，如变量，继承，运算， 函数. `LESS` 既可以在客户端上运行 (支持`IE 6+`, `Webkit`, `Firefox`)，也可一在服务端运行 (借助 `Node.js`)
 
 **为什么要使用它们？**
 
@@ -859,7 +919,7 @@ a{
     clear:both; 
  }
 .clearfix {
-    *zoom:1;
+    zoom:1;
 }
 ```
 
@@ -870,20 +930,20 @@ a{
 - 元素为行内元素，设置父元素`text-align:center`
 - 如果元素宽度固定，可以设置左右`margin`为`auto`;
 - 绝对定位和移动: `absolute + transform`
-- 使用`flex-box`布局，指定`justify-content`属性为center
-- `display`设置为`tabel-ceil`
+- 使用`flex-box`布局，指定`justify-content`属性为 `center`
+- `display`设置为 `tabel-ceil`
 
 
 
 # 47. 垂直居中的方法
 
 - 将显示方式设置为表格，`display:table-cell`,同时设置`vertial-align：middle`
-- 使用`flex`布局，设置为`align-item：center`
-- 绝对定位中设置`bottom:0,top:0`,并设置`margin:auto`
-- 绝对定位中固定高度时设置`top:50%，margin-top`值为高度一半的负值
-- 文本垂直居中设置`line-height`为`height`值
+- 使用`flex`布局，设置为 `align-item：center`
+- 绝对定位中设置 `bottom:0,top:0`,并设置 `margin:auto`
+- 绝对定位中固定高度时设置 `top:50%，margin-top` 值为高度一半的负值
+- 文本垂直居中设置 `line-height` 为 `height` 值
 
-- 如果是单行文本, line-height 设置成和 height 值
+- 如果是单行文本, `line-height ` 设置成和 `height` 值
 
 ```css
 .vertical {
@@ -907,7 +967,7 @@ a{
 ```
 
 - 未知高度的块级父子元素居中，模拟表格布局
-- 缺点：IE67不兼容，父级 overflow：hidden 失效
+- 缺点：IE67不兼容，父级 `overflow：hidden` 失效
 
 ```css
 .container {
@@ -919,7 +979,7 @@ a{
   }
 ```
 
-- 新增 inline-block 兄弟元素，设置 vertical-align
+- 新增 `inline-block` 兄弟元素，设置 `vertical-align`
   - 缺点：需要增加额外标签，IE67不兼容
 
 ```css
@@ -961,7 +1021,7 @@ a{
 
 > 硬件加速是指通过创建独立的复合图层，让GPU来渲染这个图层，从而提高性能，
 
-- 一般触发硬件加速的`CSS`属性有`transform`、`opacity`、`filter`，为了避免2D动画在开始和结束的时候的`repaint`操作，一般使用`tranform:translateZ(0）`
+- 一般触发硬件加速的`CSS`属性有 `transform`、`opacity`、`filter`，为了避免2D动画在开始和结束的时候的`repaint`操作，一般使用`tranform:translateZ(0）
 
 
 
@@ -988,8 +1048,15 @@ a{
 
 - css3的`animation`是css3新增的动画属性，这个css3动画的每一帧是通过`@keyframes`来声明的，`keyframes`声明了动画的名称，通过`from`、`to`或者是百分比来定义
 - 每一帧动画元素的状态，通过`animation-name`来引用这个动画，同时css3动画也可以定义动画运行的时长、动画开始时间、动画播放方向、动画循环次数、动画播放的方式，
-- 这些相关的动画子属性有：`animation-name`定义动画名、`animation-duration`定义动画播放的时长、`animation-delay`定义动画延迟播放的时间、`animation-direction`定义 动画的播放方向、`animation-iteration-count`定义播放次数、`animation-fill-mode`定义动画播放之后的状态、`animation-play-state`定义播放状态，如暂停运行等、`animation-timing-function`
-- 定义播放的方式，如恒速播放、艰涩播放等。
+- 这些相关的动画子属性有：
+  - `animation-name` 定义动画名
+  - `animation-duration `定义动画播放的时长
+  - `animation-delay` 定义动画延迟播放的时间
+  - `animation-direction `定义 动画的播放方向
+  - `animation-iteration-count` 定义播放次数
+  - `animation-fill-mode` 定义动画播放之后的状态
+  - `animation-play-state` 定义播放状态，如暂停运行等
+  - `animation-timing-function`定义播放的方式，如恒速播放、艰涩播放等。
 
 
 
@@ -1114,6 +1181,8 @@ transform: scale(0.7);
 
 # 53. CSS hack原理及常用hack
 
+- CSS hack是通过在CSS样式中加入一些特殊的符号，让不同的浏览器识别不同的符号（什么样的浏览器识别什么样的符号是有标准的，CSS hack就是让你记住这个标准），以达到应用不同的CSS样式的目的。
+
 - 原理：利用不同浏览器对CSS的支持和解析结果不一样编写针对特定浏览器样式。
 - 常见的hack有
   - 属性hack
@@ -1209,7 +1278,7 @@ transform: scale(0.7);
 
 - 在列的父元素上使用这个背景图进行Y轴的铺放，从而实现一种等高列的假像
 - 模仿表格布局等高列效果：兼容性不好，在ie6-7无法正常运行
-- css3 flexbox 布局： .container{display: flex; align-items: stretch;}
+- `css3 flexbox` 布局： `.container{display: flex; align-items: stretch;}`
 
 
 
@@ -1251,8 +1320,8 @@ transform: scale(0.7);
 
 # 64. 如何修改Chrome记住密码后自动填充表单的黄色背景
 
-- 产生原因：由于Chrome默认会给自动填充的input表单加上 `input:-webkit-autofill` 私有属性造成的
-- 解决方案1：在form标签上直接关闭了表单的自动填充：`autocomplete="off"`
+- 产生原因：由于 `Chrome` 默认会给自动填充的 `input` 表单加上 `input:-webkit-autofill` 私有属性造成的
+- 解决方案1：在 `form` 标签上直接关闭了表单的自动填充：`autocomplete="off"`
 - 解决方案2：`input:-webkit-autofill { background-color: transparent; }`
 
 **input [type=search] 搜索框右侧小图标如何美化？**

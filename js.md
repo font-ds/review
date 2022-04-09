@@ -1,5 +1,3 @@
-
-
 # 1. 数据类型
 
 js中有8种数据类型
@@ -48,7 +46,7 @@ js中有8种数据类型
 
 
 
-![image-20220319205526982](C:\Users\HUAWEI\AppData\Roaming\Typora\typora-user-images\image-20220319205526982.png)
+![image-20220323140340254](C:\Users\HUAWEI\AppData\Roaming\Typora\typora-user-images\image-20220323140340254.png)
 
 **深克隆**
 
@@ -116,6 +114,7 @@ sessionStorage 用于临时保存同一窗口(或标签页)的数据，在关闭
 # 5. 请描述一下 `cookies`，`sessionStorage` 和 `localStorage` 的区别
 
 - `cookie`是网站为了标示用户身份而储存在用户本地终端（Client Side）上的数据（通常经过加密）
+  - 后端返回的 `cookie`，浏览器自动读取后注入浏览器
 - `cookie`数据始终在同源的http请求中携带（即使不需要），即会在浏览器和服务器间来回传递
 - `sessionStorage`和`localStorage`不会自动把数据发给服务器，仅在本地保存
 - 存储大小：
@@ -250,10 +249,48 @@ a.consutructor.prototpe == a.__proto__
 
 # 12. JavaScript 实现继承
 
-- 构造继承
-- 原型继承
-- 实例继承
-- 拷贝继承
+- 构造继承：使用 `call` 或 `apply` 方法，将父对象的构造函数绑定在子对象上
+
+~~~js
+function Cat(name,color){
+ 　Animal.apply(this, arguments);
+ 　this.name = name;
+ 　this.color = color;
+}
+~~~
+
+- 原型继承：将子对象的 `prototype` 指向父对象的 `prototype`
+
+~~~js
+function extend(Child, Parent) {
+    var F = function(){};
+  　F.prototype = Parent.prototype;
+  　Child.prototype = new F();
+  　Child.prototype.constructor = Child;
+  　Child.uber = Parent.prototype;
+}
+~~~
+
+- 实例继承：将子对象的 prototype 指向父对象的一个实例
+
+~~~js
+Cat.prototype = new Animal();
+Cat.prototype.constructor = Cat;
+~~~
+
+- 拷贝继承：如果把父对象的所有属性和方法，拷贝进子对象
+
+~~~js
+function extend(Child, Parent) {
+　　　var p = Parent.prototype;
+　　　var c = Child.prototype;
+　　　for (var i in p) {
+　　　   c[i] = p[i];
+　　　}
+　　　c.uber = p;
+　 }
+~~~
+
 - 原型 `prototype` 机制或 `apply` 和 `call` 方法去实现较简单，建议使用构造函数与原型混合方式
 
 ~~~ js
@@ -271,6 +308,22 @@ let demo = new Child()
 console.log(demo.age,demo.name)
 ~~~
 
+- ES6 语法糖
+
+~~~js
+class ColorPoint extends Point {
+    constructor(x, y, color) {
+      super(x, y); // 调用父类的constructor(x, y)
+      this.color = color;
+    }
+    toString() {
+      return this.color + ' ' + super.toString(); // 调用父类的toString()
+    }
+}
+~~~
+
+
+
 [JavaScript是如何实现继承的(六种方式)_javascript技巧_脚本之家 (jb51.net)](https://www.jb51.net/article/81766.htm)
 
 # 13. this对象的理解
@@ -286,8 +339,33 @@ console.log(demo.age,demo.name)
 - 方法调用模式
 - 函数调用模式
 - 构造器调用模式
-
 - `apply / call` 调用模式
+
+
+
+**1. this 指向有哪几种**
+
+- 默认绑定：全局环境中，`this`默认绑定到`window`
+- 隐式绑定：一般地，被直接对象所包含的函数调用时，也称为方法调用，`this`隐式绑定到该直接对象
+- 隐式丢失：隐式丢失是指被隐式绑定的函数丢失绑定对象，从而默认绑定到`window`。显式绑定：通过`call()`、`apply()`、`bind()`方法把对象绑定到`this`上，叫做显式绑定
+- `new` 绑定：如果函数或者方法调用之前带有关键字 `new` ，它就构成构造函数调用。对于 `this` 绑定来说，称为 `new` 绑定
+  - 构造函数通常不使用`return`关键字，它们通常初始化新对象，当构造函数的函数体执行完毕时，它会显式返回。在这种情况下，构造函数调用表达式的计算结果就是这个新对象的值
+  - 如果构造函数使用`return`语句但没有指定返回值，或者返回一个原始值，那么这时将忽略返回值，同时使用这个新对象作为调用结果
+  - 如果构造函数显式地使用`return`语句返回一个对象，那么调用表达式的值就是这个对象
+
+**2. 改变函数内部 this 指针的指向函数（bind，apply，call的区别）**
+
+- `apply`：调用一个对象的一个方法，用另一个对象替换当前对象。例如：`B.apply(A, arguments)`;即A对象应用B对象的方法
+- `call`：调用一个对象的一个方法，用另一个对象替换当前对象。例如：`B.call(A, args1,args2)`;即A对象调用B对象的方法
+- `bind`除了返回是函数以外，它的参数和`call`一样
+
+**3. 箭头函数**
+
+- 箭头函数没有`this`，所以需要通过查找作用域链来确定`this`的值，这就意味着如果箭头函数被非箭头函数包含，`this`绑定的就是最近一层非箭头函数的`this`，
+- 箭头函数没有自己的`arguments`对象，但是可以访问外围函数的`arguments`对象
+- 不能通过`new`关键字调用，同样也没有`new.target`值和原型
+
+
 
 # 14. 事件模型
 
@@ -393,9 +471,11 @@ xhr.onreadystatechange = function(){
 **react中模块引入——import**
 
 提出的规范不同
+
 `import` 是ES6语法,`reuqire` 是 `CommonJs` 提出的.
 
 `import` 会通过 `babel` 转换成 `CommonJS` 规范。
+
 下面两行代码是等价的
 
 ~~~jsx
@@ -584,9 +664,9 @@ camry.sell();
 # 29. ["1", "2", "3"].map(parseInt) 答案是多少
 
 - `[1,NaN,NaN]` 因为 `parseInt` 需要两个参数 `(val,radix)` ，其中 `radix` 表示解析时用的参数
-- `map` 穿了 3 个 `(element,index,array)`,对应的 `raidx` 不合法导致解析失败返回 `NaN`
+- `map` 穿了 3 个 `(element,index,array)`,对应的 `radix` 不合法导致解析失败返回 `NaN`
 - 失败原因：
-  - 当传入 `("2",1)` 时，因为 `parseInt` 要求 `radix` 范围为 2~36 ，所有传入的 `radix` 不合法返回 `NaN`
+  - 当传入 `("2",1)` 时，因为 `parseInt` 要求 `radix` 范围为 2~36 ，所以传入的 `radix` 不合法返回 `NaN`
   - 当传入 `("3",2)` 时，即把 `"3"` 从二进制转换为十进制，2进制中没有 3 ，所以不合法返回NaN
 
 
@@ -656,8 +736,8 @@ var last = JSON.stringify(obj);
 - `eval`不会在它的外层作用域引入变量
 - `eval`和`arguments`不能被重新赋值
 - `arguments`不会自动反映函数参数的变化
-- 不能使用`arguments.callee`
-- 不能使用`arguments.caller`
+- 不能使用`arguments.callee`  (值为“正被执行的Function对象”)
+- 不能使用`arguments.caller`  (保存着调用当前函数的函数)
 - 禁止`this`指向全局对象
 - 不能使用`fn.caller`和`fn.arguments`获取函数调用的堆栈
 - 增加了保留字（比如`protected`、`static`和`interface`）
@@ -680,7 +760,7 @@ var last = JSON.stringify(obj);
 - `for-of` （用来遍历数据—例如数组中的值）
 - `arguments` 对象可被不定参数和默认参数完美替代
 - `ES6` 将 `Promise` 对象纳入规范，提供了原生的 `Promise` 对象
-- 增加了 `let` 和 `const` 命令，用来声明变量
+- 增加了 `let` 和 `const` 命令，用来声明变量  
 - 增加了块级作用域
 - `let` 命令实际上增加了块级作用域
 - 引入 `module` 模块概念
@@ -897,3 +977,1413 @@ let isType = function(obj){
 - 声明创建一个值的只读引用 (即指针)
 - 基本数据当值发生改变时，那么其对应的指针也将发生改变，故造成 `const`声明基本数据类型时，再将其值改变时，将会造成报错
 - 但是如果是复合类型时，如果只改变复合类型的其中某个`Value`项时， 将还是正常使用
+
+
+
+# 51. 让一个数组乱序
+
+~~~js
+let arr = [1,2,3,4,5,6,7,8,9,10]
+arr.sort(function(){
+    return Math.random() - 0.5
+})
+console.log(arr)
+~~~
+
+
+
+# 52. 如何显示几万条数据并不卡住页面
+
+> 这道题考察了如何在不卡住页面的情况下渲染数据，也就是说不能一次性将几万条数据都渲染出来，而应该一次渲染部分 `DOM` ，那么就可以通过 `requestAnimationFrame` 来每 `16ms` 刷新一次
+
+~~~html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+  <ul>控件</ul>
+  <script>
+    setTimeout(() => {
+      // 插入十万条数据
+      const total = 100000
+      // 一次插入 20 条，如果觉得性能不好就减少
+      const once = 20
+      // 渲染数据总共需要几次
+      const loopCount = total / once
+      let countOfRender = 0
+      let ul = document.querySelector("ul");
+      function add() {
+        // 优化性能，插入不会造成回流
+        const fragment = document.createDocumentFragment();
+        for (let i = 0; i < once; i++) {
+          const li = document.createElement("li");
+          li.innerText = Math.floor(Math.random() * total);
+          fragment.appendChild(li);
+        }
+        ul.appendChild(fragment);
+        countOfRender += 1;
+        loop();
+      }
+      function loop() {
+        if (countOfRender < loopCount) {
+          window.requestAnimationFrame(add);
+        }
+      }
+      loop();
+    }, 0);
+  </script>
+</body>
+</html>
+~~~
+
+
+
+# 53. 获取到页面中所有的checkbox怎么做
+
+~~~js
+let domList = document.getElementsByTagName('input')
+let checkBoxList = []
+let len = domList.length
+while (len--){
+    if(domList[len].type == 'checkbox'){
+        checkBoxList.push(domList[len])
+    }
+}
+~~~
+
+
+
+# 54. 添加、移除、移动、复制、创建和查找节点
+
+**创建新节点**
+
+```js
+createDocumentFragment()    //创建一个DOM片段
+createElement()   //创建一个具体的元素
+createTextNode()   //创建一个文本节点
+```
+
+**添加、移除、替换、插入**
+
+```js
+appendChild()      //添加
+removeChild()      //移除
+replaceChild()      //替换
+insertBefore()      //插入
+```
+
+**查找**
+
+~~~js
+getElementsByTagName()    //通过标签名称
+
+getElementsByName()     //通过元素的Name属性的值
+
+getElementById()        //通过元素Id，唯一性
+
+querySelector()
+~~~
+
+
+
+# 55. 正则表达式
+
+> 正则表达式构造函数`var reg=new RegExp(“xxx”)`与正则表达字面量`var reg=//`有什么不同？匹配邮箱的正则表达式？
+
+- 当使用`RegExp()`构造函数的时候，不仅需要转义引号（即`\`”表示”），并且还需要双反斜杠（即`\\`表示一个`\`）。使用正则表达字面量的效率更高
+
+邮箱的正则匹配：
+
+```js
+var regMail = /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+((.[a-zA-Z0-9_-]{2,3}){1,2})$/;
+```
+
+中文的正则匹配：
+
+~~~js
+var reg = /^[\u4e00-\u9fa5]{0,}$/
+~~~
+
+
+
+[RegExp详细---廖雪峰]([RegExp - 廖雪峰的官方网站 (liaoxuefeng.com)](https://www.liaoxuefeng.com/wiki/1022910821149312/1023021582119488))
+
+[RegExp详细---MDN]([正则表达式 - JavaScript | MDN (mozilla.org)](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Guide/Regular_Expressions))
+
+
+
+# 56. Javascript中callee和caller的作用？
+
+- `caller`是返回一个对函数的引用，该函数调用了当前函数；
+- `callee`是返回正在被执行的`function`函数，也就是所指定的`function`对象的正文
+
+> 那么问题来了？如果一对兔子每月生一对兔子；一对新生兔，从第二个月起就开始生兔子；假定每对兔子都是一雌一雄，试问一对兔子，第n个月能繁殖成多少对兔子？（使用`callee`完成）
+
+```js
+var result=[];
+  function fn(n){  //典型的斐波那契数列
+     if(n==1){
+          return 1;
+     }else if(n==2){
+             return 1;
+     }else{
+          if(result[n]){
+                  return result[n];
+         }else{
+                 // argument.callee()表示fn()
+                 result[n]=arguments.callee(n-1)+arguments.callee(n-2);
+                 return result[n];
+         }
+    }
+ }
+```
+
+
+
+**caller**
+
+> `caller`返回一个函数的引用，这个函数调用了当前的函数。
+
+**使用这个属性要注意**
+
+- 这个属性只有当函数在执行时才有用
+- 如果在`javascript`程序中，函数是由顶层调用的，则返回`null`
+
+> `functionName.caller: functionName`是当前正在执行的函数。
+
+```js
+function a() {
+  console.log(a.caller)
+}
+```
+
+**callee**
+
+> `callee`放回正在执行的函数本身的引用，它是`arguments`的一个属性
+
+> 使用callee时要注意:
+
+- 这个属性只有在函数执行时才有效
+- 它有一个`length`属性，可以用来获得形参的个数，因此可以用来比较形参和实参个数是否一致，即比较`arguments.length`是否等于`arguments.callee.length`
+- 它可以用来递归匿名函数。
+
+```js
+function a() {
+  console.log(arguments.callee)
+}
+```
+
+
+
+# 57. window.onload和$(document).ready
+
+> 原生`JS`的`window.onload`与`Jquery`的`$(document).ready(function(){})`有什么不同？如何用原生JS实现Jq的`ready`方法？
+
+- `window.onload()`方法是必须等到页面内包括图片的所有元素加载完毕后才能执行。
+- `$(document).ready()`是`DOM`结构绘制完毕后就执行，不必等到加载完毕
+
+```js
+function ready(fn){
+      if(document.addEventListener) {        //标准浏览器
+          document.addEventListener('DOMContentLoaded', function() {
+              //注销事件, 避免反复触发
+              document.removeEventListener('DOMContentLoaded',arguments.callee, false);
+              fn();            //执行函数
+          }, false);
+      }else if(document.attachEvent) {        //IE
+          document.attachEvent('onreadystatechange', function() {
+             if(document.readyState == 'complete') {
+                 document.detachEvent('onreadystatechange', arguments.callee);
+                 fn();        //函数执行
+             }
+         });
+     }
+ };
+```
+
+
+
+# 58. addEventListener()和attachEvent()的区别
+
+- `addEventListener()`是符合W3C规范的标准方法; `attachEvent()`是IE低版本的非标准方法
+- `addEventListener()`支持事件冒泡和事件捕获; - 而`attachEvent()`只支持事件冒泡
+- `addEventListener()`的第一个参数中,事件类型不需要添加`on`; `attachEvent()`需要添加`'on'`
+- 如果为同一个元素绑定多个事件, `addEventListener()`会按照事件绑定的顺序依次执行, `attachEvent()`会按照事件绑定的顺序倒序执行
+
+
+
+# 59. 数组去重
+
+**方法一、利用ES6 Set去重（ES6中最常用）**
+
+```js
+function unique (arr) {
+  return Array.from(new Set(arr))
+}
+var arr = [1,1,'true','true',true,true,15,15,false,false, undefined,undefined, null,null, NaN, NaN,'NaN', 0, 0, 'a', 'a',{},{}];
+console.log(unique(arr))
+ //[1, "true", true, 15, false, undefined, null, NaN, "NaN", 0, "a", {}, {}]
+```
+
+**方法二、利用for嵌套for，然后splice去重（ES5中最常用）**
+
+```js
+function unique(arr){            
+        for(var i=0; i<arr.length; i++){
+            for(var j=i+1; j<arr.length; j++){
+                if(arr[i]==arr[j]){         //第一个等同于第二个，splice方法删除第二个
+                    arr.splice(j,1);
+                    j--;
+                }
+            }
+        }
+	return arr;
+}
+var arr = [1,1,'true','true',true,true,15,15,false,false, undefined,undefined, null,null, NaN, NaN,'NaN', 0, 0, 'a', 'a',{},{}];
+console.log(unique(arr))
+    //[1, "true", 15, false, undefined, NaN, NaN, "NaN", "a", {…}, {…}]     //NaN和{}没有去重，两个null直接消失了
+```
+
+- 双层循环，外层循环元素，内层循环时比较值。值相同时，则删去这个值。
+- 想快速学习更多常用的`ES6`语法
+
+**方法三、利用indexOf去重**
+
+```js
+function unique(arr) {
+    if (!Array.isArray(arr)) {
+        console.log('type error!')
+        return
+    }
+    var array = [];
+    for (var i = 0; i < arr.length; i++) {
+        if (array .indexOf(arr[i]) === -1) {
+            array .push(arr[i])
+        }
+    }
+    return array;
+}
+var arr = [1,1,'true','true',true,true,15,15,false,false, undefined,undefined, null,null, NaN, NaN,'NaN', 0, 0, 'a', 'a',{},{}];
+console.log(unique(arr))
+   // [1, "true", true, 15, false, undefined, null, NaN, NaN, "NaN", 0, "a", {…}, {…}]  //NaN、{}没有去重
+```
+
+> 新建一个空的结果数组，`for` 循环原数组，判断结果数组是否存在当前元素，如果有相同的值则跳过，不相同则`push`进数组
+
+**方法四、利用sort()**
+
+```js
+function unique(arr) {
+    if (!Array.isArray(arr)) {
+        console.log('type error!')
+        return;
+    }
+    arr = arr.sort()
+    var arrry= [arr[0]];
+    for (var i = 1; i < arr.length; i++) {
+        if (arr[i] !== arr[i-1]) {
+            arrry.push(arr[i]);
+        }
+    }
+    return arrry;
+}
+var arr = [1,1,'true','true',true,true,15,15,false,false, undefined,undefined, null,null, NaN, NaN,'NaN', 0, 0, 'a', 'a',{},{}];
+console.log(unique(arr))
+// [0, 1, 15, "NaN", NaN, NaN, {…}, {…}, "a", false, null, true, "true", undefined]      //NaN、{}没有去重
+```
+
+> 利用`sort()`排序方法，然后根据排序后的结果进行遍历及相邻元素比对
+
+**方法五、利用对象的属性不能相同的特点进行去重**
+
+```js
+function unique(arr) {
+    if (!Array.isArray(arr)) {
+        console.log('type error!')
+        return
+    }
+    var arrry= [];
+     var  obj = {};
+    for (var i = 0; i < arr.length; i++) {
+        if (!obj[arr[i]]) {
+            arrry.push(arr[i])
+            obj[arr[i]] = 1
+        } else {
+            obj[arr[i]]++
+        }
+    }
+    return arrry;
+}
+var arr = [1,1,'true','true',true,true,15,15,false,false, undefined,undefined, null,null, NaN, NaN,'NaN', 0, 0, 'a', 'a',{},{}];
+console.log(unique(arr))
+//[1, "true", 15, false, undefined, null, NaN, 0, "a", {…}]    //两个true直接去掉了，NaN和{}去重
+```
+
+**方法六、利用includes**
+
+```js
+function unique(arr) {
+    if (!Array.isArray(arr)) {
+        console.log('type error!')
+        return
+    }
+    var array =[];
+    for(var i = 0; i < arr.length; i++) {
+            if( !array.includes( arr[i]) ) {//includes 检测数组是否有某个值
+                    array.push(arr[i]);
+              }
+    }
+    return array
+}
+var arr = [1,1,'true','true',true,true,15,15,false,false, undefined,undefined, null,null, NaN, NaN,'NaN', 0, 0, 'a', 'a',{},{}];
+console.log(unique(arr))
+    //[1, "true", true, 15, false, undefined, null, NaN, "NaN", 0, "a", {…}, {…}]     //{}没有去重
+```
+
+**方法七、利用hasOwnProperty**
+
+```js
+function unique(arr) {
+    var obj = {};
+    return arr.filter(function(item, index, arr){
+        return obj.hasOwnProperty(typeof item + item) ? false : (obj[typeof item + item] = true)
+    })
+}
+    var arr = [1,1,'true','true',true,true,15,15,false,false, undefined,undefined, null,null, NaN, NaN,'NaN', 0, 0, 'a', 'a',{},{}];
+        console.log(unique(arr))
+//[1, "true", true, 15, false, undefined, null, NaN, "NaN", 0, "a", {…}]   //所有的都去重了
+```
+
+> 利用`hasOwnProperty` 判断是否存在对象属性
+
+**方法八、利用filter**
+
+```js
+function unique(arr) {
+  return arr.filter(function(item, index, arr) {
+    //当前元素，在原始数组中的第一个索引==当前索引值，否则返回当前元素
+    return arr.indexOf(item, 0) === index;
+  });
+}
+var arr = [1,1,'true','true',true,true,15,15,false,false, undefined,undefined, null,null, NaN, NaN,'NaN', 0, 0, 'a', 'a',{},{}];
+console.log(unique(arr))
+//[1, "true", true, 15, false, undefined, null, "NaN", 0, "a", {…}, {…}]
+```
+
+**方法九、利用递归去重**
+
+```js
+function unique(arr) {
+    var array= arr;
+    var len = array.length;
+
+	array.sort(function(a,b){   //排序后更加方便去重
+		return a - b;
+	})
+
+	function loop(index){
+        if(index >= 1){
+            if(array[index] === array[index-1]){
+            array.splice(index,1);
+            }
+            loop(index - 1);    //递归loop，然后数组去重
+        }
+	}
+	loop(len-1);
+	return array;
+}
+var arr = [1,1,'true','true',true,true,15,15,false,false, undefined,undefined, null,null, NaN, NaN,'NaN', 0, 0, 'a', 'a',{},{}];
+console.log(unique(arr))
+//[1, "a", "true", true, 15, false, 1, {…}, null, NaN, NaN, "NaN", 0, "a", {…}, undefined]
+```
+
+**方法十、利用Map数据结构去重**
+
+```js
+function arrayNonRepeatfy(arr) {
+	let map = new Map();
+		let array = new Array();  // 数组用于返回结果
+		for (let i = 0; i < arr.length; i++) {
+			if(map .has(arr[i])) {  // 如果有该key值
+			map .set(arr[i], true);
+		} else {
+			map .set(arr[i], false);   // 如果没有该key值
+			array .push(arr[i]);
+		}
+	}
+	return array ;
+}
+ var arr = [1,1,'true','true',true,true,15,15,false,false, undefined,undefined, null,null, NaN, NaN,'NaN', 0, 0, 'a', 'a',{},{}];
+    console.log(unique(arr))
+//[1, "a", "true", true, 15, false, 1, {…}, null, NaN, NaN, "NaN", 0, "a", {…}, undefined]
+```
+
+> 创建一个空`Map`数据结构，遍历需要去重的数组，把数组的每一个元素作为`key`存到`Map`中。由于`Map`中不会出现相同的`key`值，所以最终得到的就是去重后的结果
+
+**方法十一、利用reduce+includes**
+
+```js
+function unique(arr){
+    return arr.reduce((prev,cur) => prev.includes(cur) ? prev : [...prev,cur],[]);
+}
+var arr = [1,1,'true','true',true,true,15,15,false,false, undefined,undefined, null,null, NaN, NaN,'NaN', 0, 0, 'a', 'a',{},{}];
+console.log(unique(arr));
+// [1, "true", true, 15, false, undefined, null, NaN, "NaN", 0, "a", {…}, {…}]
+```
+
+**方法十二、[...new Set(arr)]**
+
+```js
+[...new Set(arr)]
+//代码就是这么少----（其实，严格来说并不算是一种，相对于第一种方法来说只是简化了代码）
+```
+
+
+
+# 60. （设计题）想实现一个对页面某个节点的拖拽？如何做？（使用原生JS）
+
+- 给需要拖拽的节点绑定`mousedown`, `mousemove`, `mouseup`事件
+- `mousedown`事件触发后，开始拖拽
+- `mousemove`时，需要通过`event.clientX`和`clientY`获取拖拽位置，并实时更新位置
+- `mouseup`时，拖拽结束
+- 需要注意浏览器边界的情况
+
+~~~html
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+        <meta name="keywords" content="拖拽">
+        <meta name="description" content="拖拽">
+        <title>实现拖拽</title>
+        <style type="text/css">
+            *{
+                margin: 0px;
+                padding: 0px;
+            }
+            #drag{
+                width: 100px;
+                height: 100px;
+                background: red;
+                position: absolute;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="drag"></div>
+        <script type="text/javascript">
+            var Drags = function (element, callback) {
+                callback = callback || function () {};
+                var params = {
+                    top: 0,
+                    left: 0,
+                    currentX: 0,
+                    currentY: 0,
+                    flag: false
+                };
+                function getCss(element, key) {
+                    return element.currentStyle ? element.currentStyle[key] : document.defaultView.getComputedStyle(element,null)[key];
+                    // ie用currentStyle
+                }
+                var lefts = getCss(element, "left"),
+                    tops = getCss(element, "top");
+                params.left = lefts !== "auto" ? lefts : 0;
+                params.top = tops !== "auto" ? tops : 0;
+                element.onmousedown = function (event) {
+                    params.flag = true;
+                    event = event || window.event; // ie用后面
+                    params.currentX = event.clientX;
+                    params.currentY = event.clientY;
+                };
+                document.onmousemove = function (event) {
+                    event = event || window.event;
+                    if (params.flag) {
+                        // 现在位置
+                        var nowX = event.clientX,
+                            nowY = event.clientY,
+                        // 需要移动的距离  
+                            disX = nowX - params.currentX,
+                            disY = nowY - params.currentY;
+                        element.style.left = parseInt(params.left) + disX + "px";
+                        element.style.top = parseInt(params.top) + disY + "px";
+                    }
+                };
+                document.onmouseup = function () {
+                    params.flag = false;
+                    var lefts = getCss(element, "left"),
+                        tops = getCss(element, "top");
+                    params.left = lefts !== "auto" ? lefts : 0;
+                    params.top = tops !== "auto" ? tops : 0;
+                }
+            }(document.getElementById('drag'));
+        </script>
+    </body>
+</html>
+~~~
+
+
+
+# 61. JavaScript 全局函数和全局变量
+
+**全局变量**
+
+- `Infinity` 代表正的无穷大的数值。
+- `NaN` 指示某个值是不是数字值。
+- `undefined` 指示未定义的值。
+
+**全局函数**
+
+- `decodeURI()` 解码某个编码的 `URI`。
+- `decodeURIComponent()` 解码一个编码的 `URI` 组件。
+- `encodeURI()` 把字符串编码为 URI。
+- `encodeURIComponent()` 把字符串编码为 `URI` 组件。
+- `escape()` 对字符串进行编码。
+- `eval()` 计算 `JavaScript` 字符串，并把它作为脚本代码来执行。
+- `isFinite()` 检查某个值是否为有穷大的数。
+- `isNaN()` 检查某个值是否是数字。
+- `Number()` 把对象的值转换为数字。
+- `parseFloat()` 解析一个字符串并返回一个浮点数。
+- `parseInt()` 解析一个字符串并返回一个整数。
+- `String()` 把对象的值转换为字符串。
+- `unescape()` 对由`escape()` 编码的字符串进行解码
+
+
+
+# 62. 使用js实现一个持续的动画效果
+
+**定时器思路**
+
+```js
+var e = document.getElementById('e')
+var flag = true;
+var left = 0;
+setInterval(() => {
+    left == 0 ? flag = true : left == 100 ? flag = false : ''
+    flag ? e.style.left = ` ${left++}px` : e.style.left = ` ${left--}px`
+}, 1000 / 60)
+```
+
+**requestAnimationFrame**
+
+```js
+//兼容性处理
+window.requestAnimFrame = (function(){
+    return window.requestAnimationFrame       ||
+           window.webkitRequestAnimationFrame ||
+           window.mozRequestAnimationFrame    ||
+           function(callback){
+                window.setTimeout(callback, 1000 / 60);
+           };
+})();
+
+var e = document.getElementById("e");
+var flag = true;
+var left = 0;
+
+function render() {
+    left == 0 ? flag = true : left == 100 ? flag = false : '';
+    flag ? e.style.left = ` ${left++}px` :
+        e.style.left = ` ${left--}px`;
+}
+
+(function animloop() {
+    render();
+    requestAnimFrame(animloop);
+})();
+```
+
+**使用css实现一个持续的动画效果**
+
+```css
+animation:mymove 5s infinite;
+
+@keyframes mymove {
+    from {top:0px;}
+    to {top:200px;}
+}
+```
+
+- `animation-name` 规定需要绑定到选择器的 `keyframe`名称。
+- `animation-duration` 规定完成动画所花费的时间，以秒或毫秒计。
+- `animation-timing-function` 规定动画的速度曲线。
+- `animation-delay` 规定在动画开始之前的延迟。
+- `animation-iteration-count` 规定动画应该播放的次数。
+- `animation-direction` 规定是否应该轮流反向播放动画
+
+
+
+# 63. 封装一个函数，参数是定时器的时间，.then执行回调函数
+
+```js
+function sleep (time) {
+    return new Promise((resolve) => setTimeout(resolve, time));
+}
+```
+
+
+
+# 64. 怎么判断两个对象相等？
+
+```js
+obj={
+    a:1,
+    b:2
+}
+obj2={
+    a:1,
+    b:2
+}
+obj3={
+    a:1,
+    b:'2'
+}
+```
+
+> 可以转换为字符串来判断
+
+```js
+JSON.stringify(obj)==JSON.stringify(obj2);//true
+JSON.stringify(obj)==JSON.stringify(obj3);//false
+```
+
+
+
+# 65. 防抖/节流
+
+**防抖**
+
+> 在滚动事件中需要做个复杂计算或者实现一个按钮的防二次点击操作。可以通过函数防抖动来实现
+
+```js
+// 使用 underscore 的源码来解释防抖动
+
+/**
+ * underscore 防抖函数，返回函数连续调用时，空闲时间必须大于或等于 wait，func 才会执行
+ *
+ * @param  {function} func        回调函数
+ * @param  {number}   wait        表示时间窗口的间隔
+ * @param  {boolean}  immediate   设置为ture时，是否立即调用函数
+ * @return {function}             返回客户调用函数
+ */
+_.debounce = function(func, wait, immediate) {
+    var timeout, args, context, timestamp, result;
+
+    var later = function() {
+      // 现在和上一次时间戳比较
+      var last = _.now() - timestamp;
+      // 如果当前间隔时间少于设定时间且大于0就重新设置定时器
+      if (last < wait && last >= 0) {
+        timeout = setTimeout(later, wait - last);
+      } else {
+        // 否则的话就是时间到了执行回调函数
+        timeout = null;
+        if (!immediate) {
+          result = func.apply(context, args);
+          if (!timeout) context = args = null;
+        }
+      }
+    };
+
+    return function() {
+      context = this;
+      args = arguments;
+      // 获得时间戳
+      timestamp = _.now();
+      // 如果定时器不存在且立即执行函数
+      var callNow = immediate && !timeout;
+      // 如果定时器不存在就创建一个
+      if (!timeout) timeout = setTimeout(later, wait);
+      if (callNow) {
+        // 如果需要立即执行函数的话 通过 apply 执行
+        result = func.apply(context, args);
+        context = args = null;
+      }
+
+      return result;
+    };
+  };
+```
+
+> 整体函数实现
+
+对于按钮防点击来说的实现
+
+- 开始一个定时器，只要我定时器还在，不管你怎么点击都不会执行回调函数。一旦定时器结束并设置为 null，就可以再次点击了
+- 对于延时执行函数来说的实现：每次调用防抖动函数都会判断本次调用和之前的时间间隔，如果小于需要的时间间隔，就会重新创建一个定时器，并且定时器的延时为设定时间减去之前的时间间隔。一旦时间到了，就会执行相应的回调函数
+
+**节流**
+
+> 防抖动和节流本质是不一样的。防抖动是将多次执行变为最后一次执行，节流是将多次执行变成每隔一段时间执行
+
+- 函数节流(`throttle`)是指阻止一个函数在很短时间间隔内连续调用。 只有当上一次函数执行后达到规定的时间间隔，才能进行下一次调用。 但要保证一个累计最小调用间隔（否则拖拽类的节流都将无连续效果）
+- 函数节流用于 `onresize`, `onscroll` 等短时间内会多次触发的事件
+- 函数节流的原理：使用定时器做时间节流。 当触发一个事件时，先用 `setTimout` 让这个事件延迟一小段时间再执行。 如果在这个时间间隔内又触发了事件，就 `clearTimeout` 原来的定时器， 再 `setTimeout` 一个新的定时器重复以上流程。
+
+```javascript
+/**
+ * underscore 节流函数，返回函数连续调用时，func 执行频率限定为 次 / wait
+ *
+ * @param  {function}   func      回调函数
+ * @param  {number}     wait      表示时间窗口的间隔
+ * @param  {object}     options   如果想忽略开始函数的的调用，传入{leading: false}。
+ *                                如果想忽略结尾函数的调用，传入{trailing: false}
+ *                                两者不能共存，否则函数不能执行
+ * @return {function}             返回客户调用函数   
+ */
+_.throttle = function(func, wait, options) {
+    var context, args, result;
+    var timeout = null;
+    // 之前的时间戳
+    var previous = 0;
+    // 如果 options 没传则设为空对象
+    if (!options) options = {};
+    // 定时器回调函数
+    var later = function() {
+      // 如果设置了 leading，就将 previous 设为 0
+      // 用于下面函数的第一个 if 判断
+      previous = options.leading === false ? 0 : _.now();
+      // 置空一是为了防止内存泄漏，二是为了下面的定时器判断
+      timeout = null;
+      result = func.apply(context, args);
+      if (!timeout) context = args = null;
+    };
+    return function() {
+      // 获得当前时间戳
+      var now = _.now();
+      // 首次进入前者肯定为 true
+	  // 如果需要第一次不执行函数
+	  // 就将上次时间戳设为当前的
+      // 这样在接下来计算 remaining 的值时会大于0
+      if (!previous && options.leading === false) previous = now;
+      // 计算剩余时间
+      var remaining = wait - (now - previous);
+      context = this;
+      args = arguments;
+      // 如果当前调用已经大于上次调用时间 + wait
+      // 或者用户手动调了时间
+ 	  // 如果设置了 trailing，只会进入这个条件
+	  // 如果没有设置 leading，那么第一次会进入这个条件
+	  // 还有一点，你可能会觉得开启了定时器那么应该不会进入这个 if 条件了
+	  // 其实还是会进入的，因为定时器的延时
+	  // 并不是准确的时间，很可能你设置了2秒
+	  // 但是他需要2.2秒才触发，这时候就会进入这个条件
+      if (remaining <= 0 || remaining > wait) {
+        // 如果存在定时器就清理掉否则会调用二次回调
+        if (timeout) {
+          clearTimeout(timeout);
+          timeout = null;
+        }
+        previous = now;
+        result = func.apply(context, args);
+        if (!timeout) context = args = null;
+      } else if (!timeout && options.trailing !== false) {
+        // 判断是否设置了定时器和 trailing
+	    // 没有的话就开启一个定时器
+        // 并且不能不能同时设置 leading 和 trailing
+        timeout = setTimeout(later, remaining);
+      }
+      return result;
+    };
+  };
+```
+
+
+
+# 66. 谈谈变量提升？
+
+> 当执行 JS 代码时，会生成执行环境，只要代码不是写在函数中的，就是在全局执行环境中，函数中的代码会产生函数执行环境，只此两种执行环境
+
+- 接下来让我们看一个老生常谈的例子，`var`
+
+```js
+b() // call b
+console.log(a) // undefined
+
+var a = 'Hello world'
+
+function b() {
+    console.log('call b')
+}
+```
+
+> 变量提升
+>
+> 这是因为函数和变量提升的原因。通常提升的解释是说将声明的代码移动到了顶部，这其实没有什么错误，便于大家理解。但是更准确的解释应该是：在生成执行环境时，会有两个阶段。第一个阶段是创建的阶段，JS 解释器会找出需要提升的变量和函数，并且给他们提前在内存中开辟好空间，函数的话会将整个函数存入内存中，变量只声明并且赋值为 `undefined`，所以在第二个阶段，也就是代码执行阶段，我们可以直接提前使用
+
+在提升的过程中，相同的函数会覆盖上一个函数，并且函数优先于变量提升
+
+```js
+b() // call b second
+
+function b() {
+    console.log('call b fist')
+}
+function b() {
+    console.log('call b second')
+}
+var b = 'Hello world'
+```
+
+> 复制代码`var` 会产生很多错误，所以在 `ES6`中引入了 `let`。`let` 不能在声明前使用，但是这并不是常说的 `let` 不会提升，`let` 提升了，在第一阶段内存也已经为他开辟好了空间，但是因为这个声明的特性导致了并不能在声明前使用
+
+
+
+# 67. 什么是单线程，和异步的关系
+
+- 单线程 - 只有一个线程，只能做一件事
+- 原因 - 避免 `DOM` 渲染的冲突
+  - 浏览器需要渲染 `DOM`
+  - `JS` 可以修改 `DOM` 结构
+  - `JS` 执行的时候，浏览器 `DOM` 渲染会暂停
+  - 两段 JS 也不能同时执行（都修改 `DOM` 就冲突了）
+  - `webworker` 支持多线程，但是不能访问 `DOM`
+- 解决方案 - 异步
+
+
+
+# 68. 实现Storage，使得该对象为单例，并对`localStorage`进行封装设置值setItem(key,value)和getItem(key)
+
+```js
+var instance = null;
+class Storage {
+  static getInstance() {
+    if (!instance) {
+      instance = new Storage();
+    }
+    return instance;
+  }
+  setItem = (key, value) => localStorage.setItem(key, value),
+  getItem = key => localStorage.getItem(key)
+}
+```
+
+
+
+# 69. 说说`event loop`
+
+> 首先，`js`是单线程的，主要的任务是处理用户的交互，而用户的交互无非就是响应`DOM`的增删改，使用事件队列的形式，一次事件循环只处理一个事件响应，使得脚本执行相对连续，所以有了事件队列，用来储存待执行的事件，那么事件队列的事件从哪里被`push`进来的呢。那就是另外一个线程叫事件触发线程做的事情了，他的作用主要是在定时触发器线程、异步`HTTP`请求线程满足特定条件下的回调函数`push`到事件队列中，等待`js`引擎空闲的时候去执行，当然js引擎执行过程中有优先级之分，首先js引擎在一次事件循环中，会先执行js线程的主任务，然后会去查找是否有微任务`microtask（promise）`，如果有那就优先执行微任务，如果没有，在去查找宏任务`macrotask（setTimeout、setInterval）`进行执行
+
+> 众所周知 `JS` 是门非阻塞单线程语言，因为在最初 `JS` 就是为了和浏览器交互而诞生的。如果 `JS` 是门多线程的语言话，我们在多个线程中处理 `DOM` 就可能会发生问题（一个线程中新加节点，另一个线程中删除节点）
+
+- `JS` 在执行的过程中会产生执行环境，这些执行环境会被顺序的加入到执行栈中。如果遇到异步的代码，会被挂起并加入到 `Task`（有多种 `task`） 队列中。一旦执行栈为空，`Event` `Loop` 就会从 `Task` 队列中拿出需要执行的代码并放入执行栈中执行，所以本质上来说 `JS` 中的异步还是同步行为
+
+![img](https://poetries1.gitee.io/img-repo/2020/09/101.png)
+
+```js
+console.log('script start');
+
+setTimeout(function() {
+  console.log('setTimeout');
+}, 0);
+
+console.log('script end');
+```
+
+> 不同的任务源会被分配到不同的 `Task` 队列中，任务源可以分为 微任务（`microtask`） 和 宏任务（`macrotask`）。在 `ES6` 规范中，`microtask` 称为 `jobs`，`macrotask` 称为 `task`
+
+```javascript
+console.log('script start');
+
+setTimeout(function() {
+  console.log('setTimeout');
+}, 0);
+
+new Promise((resolve) => {
+    console.log('Promise')
+    resolve()
+}).then(function() {
+  console.log('promise1');
+}).then(function() {
+  console.log('promise2');
+});
+
+console.log('script end');
+// script start => Promise => script end => promise1 => promise2 => setTimeout
+```
+
+> 以上代码虽然 `setTimeout` 写在 `Promise` 之前，但是因为 `Promise` 属于微任务而 `setTimeout` 属于宏任务
+
+**微任务**
+
+- `process.nextTick`
+- `promise`
+- `Object.observe`
+- `MutationObserver`
+
+**宏任务**
+
+- `script`
+- `setTimeout`
+- `setInterval`
+- `setImmediate`
+- `I/O`
+- `UI rendering`
+
+> 宏任务中包括了 `script` ，浏览器会先执行一个宏任务，接下来有异步代码的话就先执行微任务
+
+**所以正确的一次 Event loop 顺序是这样的**
+
+- 执行同步代码，这属于宏任务
+- 执行栈为空，查询是否有微任务需要执行
+- 执行所有微任务
+- 必要的话渲染 UI
+- 然后开始下一轮 `Event loop`，执行宏任务中的异步代码
+
+> 通过上述的 `Event loop` 顺序可知，如果宏任务中的异步代码有大量的计算并且需要操作 `DOM` 的话，为了更快的响应界面响应，我们可以把操作 `DOM` 放入微任务中
+
+
+
+# 70. 说说事件流
+
+**事件流分为两种，捕获事件流和冒泡事件流**
+
+- 捕获事件流从根节点开始执行，一直往子节点查找执行，直到查找执行到目标节点
+- 冒泡事件流从目标节点开始执行，一直往父节点冒泡查找执行，直到查到到根节点
+
+> 事件流分为三个阶段，一个是捕获节点，一个是处于目标节点阶段，一个是冒泡阶段
+
+
+
+# 71. JavaScript 对象生命周期的理解
+
+- 当创建一个对象时，`JavaScript` 会自动为该对象分配适当的内存
+- 垃圾回收器定期扫描对象，并计算引用了该对象的其他对象的数量
+- 如果被引用数量为 `0`，或惟一引用是循环的，那么该对象的内存即可回收
+
+
+
+# 72.  现在要你完成一个Dialog组件，说说你设计的思路？它应该有什么功能？
+
+- 该组件需要提供`hook`指定渲染位置，默认渲染在body下面。
+- 然后改组件可以指定外层样式，如宽度等
+- 组件外层还需要一层`mask`来遮住底层内容，点击`mask`可以执行传进来的`onCancel`函数关闭`Dialog`。
+- 另外组件是可控的，需要外层传入`visible`表示是否可见。
+- 然后`Dialog`可能需要自定义头head和底部`footer`，默认有头部和底部，底部有一个确认按钮和取消按钮，确认按钮会执行外部传进来的`onOk`事件，然后取消按钮会执行外部传进来的`onCancel`事件。
+- 当组件的`visible`为`true`时候，设置`body`的`overflow`为`hidden`，隐藏`body`的滚动条，反之显示滚动条。
+- 组件高度可能大于页面高度，组件内部需要滚动条。
+- 只有组件的`visible`有变化且为`ture`时候，才重渲染组件内的所有内容
+
+
+
+# 73. ajax、axios、fetch区别
+
+- ajax (16. Ajax原理)
+
+- **axios**
+
+  ```js
+  axios({
+      method: 'post',
+      url: '/user/12345',
+      data: {
+          firstName: 'Fred',
+          lastName: 'Flintstone'
+      }
+  })
+  .then(function (response) {
+      console.log(response);
+  })
+  .catch(function (error) {
+      console.log(error);
+  });
+  ```
+
+  优缺点：
+
+  - 从浏览器中创建 `XMLHttpRequest`
+  - 从 `node.js` 发出 `http` 请求
+  - 支持 `Promise API`
+  - 拦截请求和响应
+  - 转换请求和响应数据
+  - 取消请求
+  - 自动转换`JSON`数据
+  - 客户端支持防止`CSRF/XSRF`
+
+  **fetch**
+
+  ```js
+  try {
+    let response = await fetch(url);
+    let data = response.json();
+    console.log(data);
+  } catch(e) {
+    console.log("Oops, error", e);
+  
+  }
+  
+```
+  
+优缺点：
+  
+  - `fetch`只对网络请求报错，对`400`，`500`都当做成功的请求，需要封装去处理
+  - `fetch`默认不会带`cookie`，需要添加配置项
+  - `fetch`不支持`abort`，不支持超时控制，使用`setTimeout`及`Promise.reject`的实现的超时控制并不能阻止请求过程继续在后台运行，造成了量的浪费
+  - `fetch`没有办法原生监测请求的进度，而XHR可以
+
+
+
+# 74. JavaScript的组成
+
+- `JavaScript` 由以下三部分组成：
+  - `ECMAScript（核心` ：`JavaScript` 语言基础
+  - `DOM`（文档对象模型）：规定了访问`HTML`和`XML`的接口
+  - `BOM`（浏览器对象模型）：提供了浏览器窗口之间进行交互的对象和方法
+
+
+
+# 75. 检测浏览器版本版本有哪些方式？
+
+- 根据 `navigator.userAgent` `UA.toLowerCase().indexOf('chrome')`
+- 根据 `window` 对象的成员 `'ActiveXObject' in window`
+
+
+
+# 76. 说几条写JavaScript的基本规范
+
+- 代码缩进，建议使用“四个空格”缩进
+- 代码段使用花括号`{}`包裹
+- 语句结束使用分号;
+- 变量和函数在使用前进行声明
+- 以大写字母开头命名构造函数，全大写命名常量
+- 规范定义`JSON`对象，补全双引号
+- 用`{}`和`[]`声明对象和数组
+
+
+
+# 77. script 的位置是否会影响首屏显示时间
+
+- 在解析 `HTML` 生成 `DOM` 过程中，`js` 文件的下载是并行的，不需要 `DOM` 处理到 `script` 节点。因此，`script`的位置不影响首屏显示的开始时间。
+- 浏览器解析 `HTML` 是自上而下的线性过程，`script`作为 `HTML` 的一部分同样遵循这个原则
+- 因此，`script` 会延迟 `DomContentLoad`，只显示其上部分首屏内容，从而影响首屏显示的完成时间
+
+
+
+# 78. 介绍 DOM 的发展
+
+- `DOM`：文档对象模型（`Document Object Model`），定义了访问HTML和XML文档的标准，与编程语言及平台无关
+- `DOM0`：提供了查询和操作Web文档的内容API。未形成标准，实现混乱。如：`document.forms['login']`
+- `DOM1`：W3C提出标准化的DOM，简化了对文档中任意部分的访问和操作。如：`JavaScript中的Document`对象
+- `DOM2`：原来DOM基础上扩充了鼠标事件等细分模块，增加了对CSS的支持。如：`getComputedStyle(elem, pseudo)`
+- `DOM3`：增加了XPath模块和加载与保存（`Load and Save`）模块。如：`XPathEvaluator`
+
+**介绍DOM0，DOM2，DOM3事件处理方式区别**
+
+- DOM0级事件处理方式：
+  - `btn.onclick = func;`
+  - `btn.onclick = null;`
+- DOM2级事件处理方式：
+  - `btn.addEventListener('click', func, false);`              `true` 捕获阶段执行，`false` 冒泡阶段执行
+  - `btn.removeEventListener('click', func, false);`
+  - `btn.attachEvent("onclick", func);`
+  - `btn.detachEvent("onclick", func);`
+- DOM3级事件处理方式：
+  - `eventUtil.addListener(input, "textInput", func);`
+  - `eventUtil` 是自定义对象，`textInput` 是DOM3级事件
+
+**事件的三个阶段**
+
+- 捕获、目标、冒泡
+
+
+
+# 79. 介绍事件“捕获”和“冒泡”执行顺序和事件的执行次数
+
+- 按照W3C标准的事件：首是进入捕获阶段，直到达到目标元素，再进入冒泡阶段
+- 事件执行次数（DOM2-addEventListener）：元素上绑定事件的个数
+  - 注意1：前提是事件被确实触发
+  - 注意2：事件绑定几次就算几个事件，即使类型和功能完全一样也不会“覆盖”
+- 事件执行顺序：判断的关键是否目标元素
+  - 非目标元素：根据W3C的标准执行：捕获->目标元素->冒泡（不依据事件绑定顺序）
+  - 目标元素：依据事件绑定顺序：先绑定的事件先执行（不依据捕获冒泡标准）
+  - 最终顺序：父元素捕获->目标元素事件1->目标元素事件2->子元素捕获->子元素冒泡->父元素冒泡
+  - 注意：子元素事件执行前提 事件确实“落”到子元素布局区域上，而不是简单的具有嵌套关系
+
+**在一个DOM上同时绑定两个点击事件：一个用捕获，一个用冒泡。事件会执行几次，先执行冒泡还是捕获？**
+
+- 该DOM上的事件如果被触发，会执行两次（执行次数等于绑定次数）
+- 如果该DOM是目标元素，则按事件绑定顺序执行，不区分冒泡/捕获
+- 如果该DOM是处于事件流中的非目标元素，则先执行捕获，后执行冒泡
+
+**事件的代理/委托**
+
+- 事件委托是指将事件绑定目标元素的到父元素上，利用冒泡机制触发该事件
+  - 优点：
+    - 可以减少事件注册，节省大量内存占用
+    - 可以将事件应用于动态添加的子元素上
+  - 缺点： 使用不当会造成事件在不应该触发时触发
+  - 示例：
+
+```text
+ulEl.addEventListener('click', function(e){
+    var target = event.target || event.srcElement;
+    if(!!target && target.nodeName.toUpperCase() === "LI"){
+        console.log(target.innerHTML);
+    }
+}, false);
+```
+
+**W3C事件的 target 与 currentTarget 的区别？**
+
+- `target` 只会出现在事件流的目标阶段
+- `currentTarget` 可能出现在事件流的任何阶段
+- 当事件流处在目标阶段时，二者的指向相同
+- 当事件流处于捕获或冒泡阶段时：`currentTarget` 指向当前事件活动的对象(一般为父级)
+
+**如何派发事件(dispatchEvent)？（如何进行事件广播？）**
+
+- W3C: 使用 `dispatchEvent` 方法
+- IE: 使用 `fireEvent` 方法
+
+```js
+var fireEvent = function(element, event){z
+    if (document.createEventObject){
+        var mockEvent = document.createEventObject();
+        return element.fireEvent('on' + event, mockEvent)
+    }else{
+        var mockEvent = document.createEvent('HTMLEvents');
+        mockEvent.initEvent(event, true, true);
+        return !element.dispatchEvent(mockEvent);
+    }
+}
+```
+
+
+
+# 80. 区分什么是“客户区坐标”、“页面坐标”、“屏幕坐标”
+
+- 客户区坐标：鼠标指针在可视区中的水平坐标(`clientX`)和垂直坐标(`clientY`)
+- 页面坐标：鼠标指针在页面布局中的水平坐标(`pageX`)和垂直坐标(`pageY`)
+- 屏幕坐标：设备物理屏幕的水平坐标(`screenX`)和垂直坐标(`screenY`)
+
+**如何获得一个DOM元素的绝对位置？**
+
+- `elem.offsetLef`t：返回元素相对于其定位父级左侧的距离
+- `elem.offsetTop`：返回元素相对于其定位父级顶部的距离
+- `elem.getBoundingClientRect()`：返回一个`DOMRect`对象，包含一组描述边框的只读属性，单位像素
+
+
+
+# 81. Javascript垃圾回收方法
+
+- 标记清除（mark and sweep）
+
+> - 这是JavaScript最常见的垃圾回收方式，当变量进入执行环境的时候，比如函数中声明一个变量，垃圾回收器将其标记为“进入环境”，当变量离开环境的时候（函数执行结束）将其标记为“离开环境”
+> - 垃圾回收器会在运行的时候给存储在内存中的所有变量加上标记，然后去掉环境中的变量以及被环境中变量所引用的变量（闭包），在这些完成之后仍存在标记的就是要删除的变量了
+
+**引用计数(reference counting)**
+
+> 在低版本IE中经常会出现内存泄露，很多时候就是因为其采用引用计数方式进行垃圾回收。引用计数的策略是跟踪记录每个值被使用的次数，当声明了一个 变量并将一个引用类型赋值给该变量的时候这个值的引用次数就加1，如果该变量的值变成了另外一个，则这个值得引用次数减1，当这个值的引用次数变为0的时 候，说明没有变量在使用，这个值没法被访问了，因此可以将其占用的空间回收，这样垃圾回收器会在运行的时候清理掉引用次数为0的值占用的空间
+
+
+
+# 82. 请解释一下 JavaScript 的同源策略
+
+- 概念:同源策略是客户端脚本（尤其是Javascript）的重要的安全度量标准。它最早出自Netscape Navigator2.0，其目的是防止某个文档或脚本从多个不同源装载。这里的同源策略指的是：协议，域名，端口相同，同源策略是一种安全协议
+- 指一段脚本只能读取来自同一来源的窗口和文档的属性
+
+**为什么要有同源限制？**
+
+- 我们举例说明：比如一个黑客程序，他利用Iframe把真正的银行登录页面嵌到他的页面上，当你使用真实的用户名，密码登录时，他的页面就可以通过Javascript读取到你的表单中input中的内容，这样用户名，密码就轻松到手了。
+- 缺点
+  - 现在网站的JS都会进行压缩，一些文件用了严格模式，而另一些没有。这时这些本来是严格模式的文件，被 merge后，这个串就到了文件的中间，不仅没有指示严格模式，反而在压缩后浪费了字节
+
+
+
+# 83. 如何删除一个cookie
+
+- 将时间设为当前时间往前一点
+
+```js
+var date = new Date();
+
+date.setDate(date.getDate() - 1);//真正的删除
+```
+
+> `setDate()`方法用于设置一个月的某一天
+
+- `expires`的设置
+
+```js
+document.cookie = 'user='+ encodeURIComponent('name')  + ';expires = ' + new Date(0)
+```
+
+
+
+# 84. 页面编码和被请求的资源编码如果不一致如何处理
+
+- 后端响应头设置 `charset`
+- 前端页面`<meta>`设置 `charset`
+
+
+
+# 85. 把`<script>`放在`</body>`之前和之后有什么区别？浏览器会如何解析它们？
+
+- 按照HTML标准，在`</body>`结束后出现`<script>`或任何元素的开始标签，都是解析错误
+- 虽然不符合HTML标准，但浏览器会自动容错，使实际效果与写在`</body>`之前没有区别
+- 浏览器的容错机制会忽略`<script>`之前的`</body>`，视作`<script>`仍在 body 体内。省略`</body>`和`</html>`闭合标签符合HTML标准，服务器可以利用这一标准尽可能少输出内容
+
+
+
+# 86. JavaScript 中，调用函数有哪几种方式
+
+- 方法调用模式 `Foo.foo(arg1, arg2);`
+- 函数调用模式 `foo(arg1, arg2);`
+- 构造器调用模式 `(new Foo())(arg1, arg2);`
+- `call/applay`调用模式 `Foo.foo.call(that, arg1, arg2);`
+- `bind`调用模式 `Foo.foo.bind(that)(arg1, arg2)();`
+
+
+
+# 87. 简单实现 Function.bind 函数
+
+```js
+  if (!Function.prototype.bind) {
+    Function.prototype.bind = function(that) {
+      var func = this, args = arguments;
+      return function() {
+        return func.apply(that, Array.prototype.slice.call(args, 1));
+      }
+    }
+  }
+  // 只支持 bind 阶段的默认参数：
+  func.bind(that, arg1, arg2)();
+
+  // 不支持以下调用阶段传入的参数：
+  func.bind(that)(arg1, arg2);
+```
+
+
+
+# 88. 列举一下JavaScript数组和对象有哪些原生方法？
+
+- `arr.concat(arr1, arr2, arrn);`
+- `arr.join(",");`
+- `arr.sort(func);`
+- `arr.pop();`
+- `arr.push(e1, e2, en);`
+- `arr.shift();`
+- `unshift(e1, e2, en);`
+- `arr.reverse();`
+- `arr.slice(start, end);`
+- `arr.splice(index, count, e1, e2, en);`
+- `arr.indexOf(el);`
+- `arr.includes(el);` // ES6
+
+**对象：**
+
+- `object.hasOwnProperty(prop);`
+- `object.propertyIsEnumerable(prop);`
+- `object.valueOf();`
+- `object.toString();`
+- `object.toLocaleString();`
+- `Class.prototype.isPropertyOf(object);`
+
+
+
+# 89. Array.slice() 与 Array.splice() 的区别？
+
+**`slice`**
+
+> “读取”数组指定的元素，不会对原数组进行修改
+
+- 语法：`arr.slice(start, end)`
+- `start` 指定选取开始位置（含）
+- `end` 指定选取结束位置（不含）
+
+**`splice`**
+
+- “操作”数组指定的元素，会修改原数组，返回被删除的元素
+- 语法：`arr.splice(index, count, [insert Elements])`
+- `index` 是操作的起始位置
+- `count = 0` 插入元素，`count > 0` 删除元素
+- `[insert Elements]` 向数组新插入的元素
+
+
+
+# 90. WEB应用从服务器主动推送Data到客户端有那些方式
+
+- `AJAX` 轮询
+- `html5` 服务器推送事件 `(new EventSource(SERVER_URL)).addEventListener("message", func);`
+- html5 Websocket
+
+- `(new WebSocket(SERVER_URL)).addEventListener("message", func);`
+
+
+
+# 91. 有四个操作会忽略enumerable为false的属性
+
+- `for...in`循环：只遍历对象自身的和继承的可枚举的属性。
+- `Object.keys()`：返回对象自身的所有可枚举的属性的键名。
+- `JSON.stringify()`：只串行化对象自身的可枚举的属性。
+- `Object.assign()`： 忽略`enumerable`为`false`的属性，只拷贝对象自身的可枚举的属性。
+
+
+
+# 92. 属性的遍历
+
+> ES6 一共有 5 种方法可以遍历对象的属性。
+
+**（1）for...in**
+
+> `for...in`循环遍历对象自身的和继承的可枚举属性（不含 Symbol 属性）。
+
+**（2）Object.keys(obj)**
+
+> `Object.keys`返回一个数组，包括对象自身的（不含继承的）所有可枚举属性（不含 Symbol 属性）的键名。
+
+**（3）Object.getOwnPropertyNames(obj)**
+
+> `Object.getOwnPropertyNames`返回一个数组，包含对象自身的所有属性（不含 Symbol 属性，但是包括不可枚举属性）的键名。
+
+**（4）Object.getOwnPropertySymbols(obj)**
+
+> `Object.getOwnPropertySymbols`返回一个数组，包含对象自身的所有 Symbol 属性的键名。
+
+**（5）Reflect.ownKeys(obj)**
+
+> `Reflect.ownKeys`返回一个数组，包含对象自身的（不含继承的）所有键名，不管键名是 Symbol 或字符串，也不管是否可枚举。
+
+> 以上的 5 种方法遍历对象的键名，都遵守同样的属性遍历的次序规则。
+
+- 首先遍历所有数值键，按照数值升序排列。
+- 其次遍历所有字符串键，按照加入时间升序排列。
+- 最后遍历所有 Symbol 键，按照加入时间升序排列。
+
+```text
+Reflect.ownKeys({ [Symbol()]:0, b:0, 10:0, 2:0, a:0 })
+// ['2', '10', 'b', 'a', Symbol()]
+```
+
+> 上面代码中，`Reflect.ownKeys`方法返回一个数组，包含了参数对象的所有属性。这个数组的属性次序是这样的，首先是数值属性2和10，其次是字符串属性b和a，最后是 `Symbol` 属性。
+
+
+
+# 93. 为什么通常在发送数据埋点请求的时候使用的是 1x1 像素的透明 gif 图片
+
+- 能够完成整个 `HTTP` 请求+响应（尽管不需要响应内容）
+- 触发 `GET` 请求之后不需要获取和处理数据、服务器也不需要发送数据
+- 跨域友好
+- 执行过程无阻塞
+- 相比 `XMLHttpRequest` 对象发送 `GET` 请求，性能上更好
+- GIF的最低合法体积最小（最小的BMP文件需要74个字节，PNG需要67个字节，而合法的GIF，只需要43个字节）
+
+
+
+# 94. 在输入框中如何判断输入的是一个正确的网址
+
+```js
+function isUrl(url) {
+       try {
+           new URL(url);
+           return true;
+       }catch(err){
+     return false;
+}}
+```
+
