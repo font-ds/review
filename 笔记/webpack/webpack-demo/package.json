@@ -1,0 +1,10 @@
+{
+  "name": "webpack-dom",
+  "version": "1.0.0",
+  "description": "",
+  "private": true,
+  "scripts": {},
+  "keywords": [],
+  "author": "guan",
+  "license": "ISC"
+}

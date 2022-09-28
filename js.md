@@ -1,8 +1,8 @@
-# 1. 数据类型
+# 1. 数据类型	
 
 js中有8种数据类型
 
-基础类型：number	string	boolen	null	undifiend    symbol
+基础类型：number	string	boolen	null	undifiend    symbol   bigInt
 
 引用类型：object	function	
 
@@ -12,8 +12,9 @@ js中有8种数据类型
 - 堆：引用数据类型（对象、数组和函数）
 - 两种类型的区别是：存储位置不同；
 - 原始数据类型直接存储在栈(`stack`)中的简单数据段，占据空间小、大小固定，属于被频繁使用数据，所以放入栈中存储；
-- 引用数据类型存储在堆(`heap`)中的对象,占据空间大、大小不固定,如果存储在栈中，将会影响程序运行的性能；引用数据类型在栈中存储了指针，该指针指向堆中该实体的起始地址。当解释器寻找引用值时，会首先检索其
-- 在栈中的地址，取得地址后从堆中获得实体
+- 引用数据类型是存储在堆(`heap`)中的对象,占据空间大、大小不固定,如果存储在栈中，将会影响程序运行的性能；引用数据类型在栈中存储了指针，该指针指向堆中该实体的起始地址。当解释器寻找引用值时，会首先检索其在栈中的地址，取得地址后从堆中获得实体
+
+
 
 # 2. 对象深浅克隆（头条）
 
@@ -46,7 +47,7 @@ js中有8种数据类型
 
 
 
-![image-20220323140340254](C:\Users\HUAWEI\AppData\Roaming\Typora\typora-user-images\image-20220323140340254.png)
+![image-20220505141731117](/Users/guanyifang/Library/Application Support/typora-user-images/image-20220505141731117.png)
 
 **深克隆**
 
@@ -103,11 +104,11 @@ js中有8种数据类型
 
 # 4. localStorage & sessionStorage
 
-localStorage 和 sessionStorage 属性允许在浏览器中存储 key/value 对的数据。
+`localStorage` 和 `sessionStorage` 属性允许在浏览器中存储 `key/value` 对的数据。
 
-sessionStorage 用于临时保存同一窗口(或标签页)的数据，在关闭窗口或标签页之后将会删除这些数据。
+`sessionStorage` 用于临时保存同一窗口(或标签页)的数据，在关闭窗口或标签页之后将会删除这些数据。
 
-在浏览器窗口关闭后还保留数据，可以使用 [localStorage](https://www.runoob.com/jsref/prop-win-localstorage.html) 属性。
+在浏览器窗口关闭后还保留数据，可以使用 `localStorage` 属性。
 
 
 
@@ -115,7 +116,7 @@ sessionStorage 用于临时保存同一窗口(或标签页)的数据，在关闭
 
 - `cookie`是网站为了标示用户身份而储存在用户本地终端（Client Side）上的数据（通常经过加密）
   - 后端返回的 `cookie`，浏览器自动读取后注入浏览器
-- `cookie`数据始终在同源的http请求中携带（即使不需要），即会在浏览器和服务器间来回传递
+- `cookie`数据始终在同源的 `http` 请求中携带（即使不需要），即会在浏览器和服务器间来回传递
 - `sessionStorage`和`localStorage`不会自动把数据发给服务器，仅在本地保存
 - 存储大小：
   - `cookie`数据大小不能超过4k
@@ -191,7 +192,7 @@ sessionStorage 用于临时保存同一窗口(或标签页)的数据，在关闭
 
 ~~~js
 let a = {}
-a.consutructor.prototpe == a.__proto__
+a.consutructor.prototype == a.__proto__
 ~~~
 
 - 特点：
@@ -345,7 +346,7 @@ class ColorPoint extends Point {
 
 **1. this 指向有哪几种**
 
-- 默认绑定：全局环境中，`this`默认绑定到`window`
+- 默认绑定：全局环境中，`this` 默认绑定到 `window`
 - 隐式绑定：一般地，被直接对象所包含的函数调用时，也称为方法调用，`this`隐式绑定到该直接对象
 - 隐式丢失：隐式丢失是指被隐式绑定的函数丢失绑定对象，从而默认绑定到`window`。显式绑定：通过`call()`、`apply()`、`bind()`方法把对象绑定到`this`上，叫做显式绑定
 - `new` 绑定：如果函数或者方法调用之前带有关键字 `new` ，它就构成构造函数调用。对于 `this` 绑定来说，称为 `new` 绑定
@@ -355,15 +356,15 @@ class ColorPoint extends Point {
 
 **2. 改变函数内部 this 指针的指向函数（bind，apply，call的区别）**
 
-- `apply`：调用一个对象的一个方法，用另一个对象替换当前对象。例如：`B.apply(A, arguments)`;即A对象应用B对象的方法
-- `call`：调用一个对象的一个方法，用另一个对象替换当前对象。例如：`B.call(A, args1,args2)`;即A对象调用B对象的方法
-- `bind`除了返回是函数以外，它的参数和`call`一样
+- `apply`：调用一个对象的一个方法，用另一个对象替换当前对象。例如：`B.apply(A, arguments)` ; 即A对象应用B对象的方法
+- `call`：调用一个对象的一个方法，用另一个对象替换当前对象。例如：`B.call(A, args1,args2)` ; 即A对象调用B对象的方法
+- `bind`：除了返回是函数以外，它的参数和`call`一样
 
 **3. 箭头函数**
 
-- 箭头函数没有`this`，所以需要通过查找作用域链来确定`this`的值，这就意味着如果箭头函数被非箭头函数包含，`this`绑定的就是最近一层非箭头函数的`this`，
-- 箭头函数没有自己的`arguments`对象，但是可以访问外围函数的`arguments`对象
-- 不能通过`new`关键字调用，同样也没有`new.target`值和原型
+- 箭头函数没有 `this`，所以需要通过查找作用域链来确定 `this` 的值，这就意味着如果箭头函数被非箭头函数包含，`this` 绑定的就是最近一层非箭头函数的 `this`，
+- 箭头函数没有自己的 `arguments`对象，但是可以访问外围函数的 `arguments`对象
+- 不能通过 `new` 关键字调用，同样也没有 `new.target` 值和原型
 
 
 
@@ -381,9 +382,11 @@ class ColorPoint extends Point {
 
 # 15. new操作符具体干了什么
 
-- 创建一个空对象，并且 `this` 变量引用该对象，同时还继承了该函数的原型
-- 属性和方法被加入到 `this` 引用的对象中
-- 新创建的对象由 `this` 所引用，并且最后隐式的返回 `this`
+- 在内存中创建一个新对象。
+- 将空对象的 `__proto__` 指向构造函数的 `protoType` 属性
+- 构造函数内部的 `this` 被赋值为这个 新对象（即 `this` 指向新对象）
+- 执行构造函数内部的代码（给新对象添加属性）
+- 如果构造函数返回非空对象，则返回该对象；否则，返回刚才创建的新对象
 
 
 
@@ -510,7 +513,7 @@ const component = require('./component')
   - `pending:` 初始状态, 非 `fulfilled` 或 `rejected.`
   - `fulfilled:` 成功的操作.
   - `rejected:` 失败的操作.
-  - `settled: Promise`已被`fulfilled`或`rejected`，且不是`pending`
+  - `settled: Promise`已被`fulfilled`或`rejected`，且不是`pending`  （可能已经被废弃了）
 - 另外， `fulfilled`与 `rejected`一起合称 `settled`
 - `Promise` 对象用来进行延迟(`deferred`) 和异步(`asynchronous`) 计算
 
@@ -1888,23 +1891,27 @@ console.log('script end');
 > 不同的任务源会被分配到不同的 `Task` 队列中，任务源可以分为 微任务（`microtask`） 和 宏任务（`macrotask`）。在 `ES6` 规范中，`microtask` 称为 `jobs`，`macrotask` 称为 `task`
 
 ```javascript
-console.log('script start');
+console.log('1');
 
 setTimeout(function() {
-  console.log('setTimeout');
+  console.log('2');
 }, 0);
 
 new Promise((resolve) => {
-    console.log('Promise')
+    console.log('3')
     resolve()
 }).then(function() {
-  console.log('promise1');
+  console.log('4');
+  process.nextTick(function(){
+    console.log('5')
+  })
 }).then(function() {
-  console.log('promise2');
+  console.log('6');
 });
 
-console.log('script end');
-// script start => Promise => script end => promise1 => promise2 => setTimeout
+console.log('7');
+
+// 1 => 3 => 7 => 4 => 6 => 2 =>5
 ```
 
 > 以上代码虽然 `setTimeout` 写在 `Promise` 之前，但是因为 `Promise` 属于微任务而 `setTimeout` 属于宏任务
@@ -2017,6 +2024,7 @@ console.log('script end');
   
   }
   
+  ```
 ```
   
 优缺点：
@@ -2119,7 +2127,7 @@ console.log('script end');
   - 缺点： 使用不当会造成事件在不应该触发时触发
   - 示例：
 
-```text
+​```text
 ulEl.addEventListener('click', function(e){
     var target = event.target || event.srcElement;
     if(!!target && target.nodeName.toUpperCase() === "LI"){
@@ -2386,4 +2394,257 @@ function isUrl(url) {
      return false;
 }}
 ```
+
+
+
+# 95. Symbol() 数据类型深入理解
+
+`Symbol` 是一种原始数据类型，其创建之后会在栈内存中存在，并不会向引用值数据类型在堆内存中存在。其存在就是为了确保对象属性唯一，不会存在属性冲突。
+
+- **基本用法**
+
+  - `Symbol`
+
+  ```js
+  let s1 = Symbol()
+  let s2 = Symbol()
+  console.log(s1 === s2)   // false
+  
+  let s3 = Symbol("2022")
+  let s4 = Symbol("2022")
+  console.log(s3 === s4)   // false
+  ```
+
+  - `Symbol.for()`
+
+  ```js
+  let s1 = Symbol.for("2022")
+  let s2 = Symbol.for("2022")
+  console.log(s1 === s2)   // true
+  ```
+
+  `Symbol()` 中，当创建一个实例，无论传给 `Symbol` 的值是否相同,都会在内存中新建一个 `Symbol` 实例。`Symbol.for()` 中，当实例化一个对象，这个对象就会在Window中存在，也就类似于全局变量，此时就会从全局中找是否存在 `Symbol.for()` 相同的实例，如果存在，就返回原来值，如果不存在就新开辟一个内存空间。所以 `Symbol.for()` 为 `true`。
+
+  
+
+  - `Symbol.keyfor()` 取出 `Symbol.for()` 中的 `key` 值 ; `Symbol().description` 会返回 `Symbol()` 中的 `key`
+
+  ```js
+  let s1 = Symbol.for("name")
+  let key = Symbol.keyfor(s1)
+  console.log(key)    // name
+  
+  let s2 = Symbol("name2")
+  let key2 = s2.description
+  console.log(key2)   // name2
+  ```
+
+  
+
+- **`Symbol()` 遍历**
+
+  在遍历中我们使用的是 `for-in` 和 `for-of`
+
+  `for–in`：遍历的是键，对于 `Array` 来说，`for–in` 遍历的是数组下标
+  `for–of`：遍历的是值，当使用对象时，必须使用 `Object.keys()` , `Object.values()`
+
+  ```js
+  let s1 = Symbol("我是2021");
+  let obj = {
+  	name:"2021",
+  	[s1]:"I am winner",
+  }
+  for(const x in obj){
+  	console.log(x);
+  }  //name
+  
+  //使用getOwnPropertySymbols(),只获取Symbol的key
+  for (const x of Object.getOwnPropertySymbols(obj)){
+  	console.log(x);
+  }  //Symbol("我是2021");
+  
+  //使用getOwnPropertyNames，不能获取Symbol的key
+  for (const x of Object.getOwnPropertyNames(obj)){
+  	console.log(x);
+  }  //name
+  
+  //使用Reflect.ownKeys，Symbol的key和正常key都可以获取
+  for (const x of Reflect.ownKeys(obj)){
+  	console.log(x);
+  }  //name，Symbol("我是2021");
+  
+  ```
+
+
+
+- `Symbol` 运用场景
+
+  - 使用 `Symbol` 来作为对象属性名
+
+  `Symbol`可以用于对象属性的定义和访问
+
+  ```js
+  
+  const PERSON_NAME = Symbol();
+  const PERSON_AGE = Symbol();
+   
+  let person = {
+      [PERSON_NAME]: "随笔川迹"
+  }
+   
+  person[PERSON_AGE] =  20;
+   
+  console.log(person[PERSON_NAME])  // 随笔川迹
+  console.log(person[PERSON_AGE])   // 20
+  ```
+
+  - 使用 `Symbol` 定义类的私有属性/方法
+
+  ```js
+  let size = Symbol('size');  // 声明定义了一个size变量,类型是Symbol(),类型描述内容是size
+   
+  class Collection {          // class关键字定义了一个Collection类
+    constructor() {           // 构造器`constructor`函数
+      this[size] = 0;         // 在当前类上私有化了一个size属性
+    }
+   
+    add(item) {              // Collection类下的一个方法
+      this[this[size]] = item;
+      this[size]++;
+    }
+   
+    static sizeOf(instance) { // 静态属性
+      return instance[size];
+    }
+  }
+   
+  let x = new Collection(); // 实例化x对象
+  Collection.sizeOf(x) // 0
+   
+  x.add('foo');       // 调用方法
+  Collection.sizeOf(x) // 1
+   
+  Object.keys(x) // ['0']
+  Object.getOwnPropertyNames(x) // ['0']
+  Object.getOwnPropertySymbols(x) // [Symbol(size)]
+  ```
+
+  - 模块化机制
+
+  结合`Symbol`与模块化机制,类的私有属性和方法完美实现
+
+  ```js
+  // 在文件a.js中
+  const PASSWORD = Symbol();  // 定义一个PASSWORD变量,类型是Symbol
+   
+  class Login() {      // class关键字声明一个Login类
+    constructor(username, password) {    // 构造器函数内初始化属性
+      this.username = username;
+      this[PASSWORD] = password;
+    }
+   
+    checkPassword(pwd) {
+      return this[PASSWORD] === pwd;
+    }
+   
+  }
+  export default Login;
+  ```
+
+  ```js
+  // 在文件b.js中
+  import Login from './a'
+   
+  const login = new Login('itclanCoder', '123456'); // 实例化一个login对象
+   
+  login.checkPassword('123456'); // true
+  login.PASSWORD;  // 访问不到
+  login[PASSWORD]; // 访问不到
+  login['PASSWORD'] // 访问不到
+  ```
+
+  - 使用 `Symbol` 替代常量
+
+  在`Redux`中很常见,将`action`对象中的`type`值,给抽离出来,定义一个常量存储,来代表一种业务逻辑,通常希望这些常量是唯一的
+
+  ```js
+  const CHANGE_INPUT_VALUE = Symbol()
+  const ADD_INPUT_CONTENT = Symbol();
+  const DELETE_LIST = Symbol()
+   
+  function reducer(state, action) {
+      const newState =  JSON.parse(JSON.stringify(state));
+      switch(action.type) {
+          case CHANGE_INPUT_VALUE:
+               // ...
+          case ADD_INPUT_CONTENT:
+               // ...
+          case DELETE_LIST;
+                // ...
+          default:
+               return state;
+      }
+  }
+  ```
+
+
+
+- **注意事项**
+
+  - `Symbol` 值不能与其他类型的值进行运算-会报错
+
+  ```js
+  let symItclan = Symbol('itclan');
+   
+  console.log("主站" + symItclan)
+  console.log(`主站 ${symItclan}`) // Uncaught TypeError: Cannot convert a Symbol value to a string 报错
+  ```
+
+  
+
+  - `Symbol` 可以转换为字符串
+
+  ```js
+  let SyItclanCoder = Symbol('https://coder.itclan.cn');
+   
+  console.log(String(SyItclanCoder)) // Symbol(https://coder.itclan.cn)
+  console.log(SyItclanCoder.toString()) // Symbol(https://coder.itclan.cn)
+  ```
+
+  
+
+  - `Symbol`值可以转为布尔值,但是不能转为数值
+
+  ```js
+  let sym = Symbol();
+  console.log(Boolean(sym)) // true
+  console.log(!sym)  // false
+   
+  if (sym) {
+    // ...
+  }
+   
+  Number(sym) // TypeError  Cannot convert a Symbol value to a number
+  sym + 2 // TypeError
+  ```
+
+  
+
+  - `Symbol`函数不能使用`new`命令
+
+  `Symbol`函数前不能使用`new`命令,否则就会报错,`Symbol`是一个原始类型的值,不是对象,它是类似字符串的数据类型
+
+  
+
+  - `Symbol值`作为对象属性名时，不能用点运算符
+
+  ```js
+  const username = Symbol();
+  const person = {};
+  person.username = '随笔川迹';
+  person[username]; // undefined
+  person['username']; // 随笔川迹
+  ```
+
+  如果变量 `username` 不放在中括号中,该属性的键名就是字符串,而不是定义`Symbol`类型值
 

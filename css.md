@@ -173,13 +173,13 @@ background-color:red
 
   - 元素宽度 = `width + padding + border + margin`
   
-  ![image-20220314161003029](C:\Users\HUAWEI\AppData\Roaming\Typora\typora-user-images\image-20220314161003029.png)
+  ![image-20220505142022428](/Users/guanyifang/Library/Application Support/typora-user-images/image-20220505142022428.png)
   
 - 怪异盒模块（IE盒模型）
 
   - 元素宽度 = `width + margin`
 
-  ![image-20220314161022052](C:\Users\HUAWEI\AppData\Roaming\Typora\typora-user-images\image-20220314161022052.png)
+  ![image-20220505142042160](/Users/guanyifang/Library/Application Support/typora-user-images/image-20220505142042160.png)
 
   
 
@@ -237,6 +237,8 @@ background-color:red
 
 ## css权重计算
 
+> !important > 内联样式 = 外联样式 > ID选择器 > 类选择器 = 伪类选择器 = 属性选择器 > 元素选择器 = 伪元素选择器 > 通配选择器 = 后代选择器 = 兄弟选择器
+
 1. !important —— 最高权值
 
 2. 内联样式 style —— 权重值：1000
@@ -252,8 +254,6 @@ background-color:red
    
 
 # 9. 盒子水平垂直居中
-
-这种需求在我之前的项目中十分常见，随着flex兴起，后来看blog发现这种方式也十分好
 
 ```shell
 //1、定位
@@ -295,7 +295,18 @@ body{
   display:inline-block;
 }
 
+```
 
+ **水平居中**
+
+```css
+// margin:0 auto 方法
+// 要求自身有固定宽度
+div{
+  width:100px;
+  height:100px;
+  margin:0 auto;
+}
 ```
 
 

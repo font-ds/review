@@ -2,13 +2,13 @@
 
 ![img](https://images0.cnblogs.com/blog2015/545411/201505/231506144997010.png)
 
-![image-20220316122155208](C:\Users\HUAWEI\AppData\Roaming\Typora\typora-user-images\image-20220316122155208.png)
+![image-20220505142244692](/Users/guanyifang/Library/Application Support/typora-user-images/image-20220505142244692.png)
 
 # 2. TCP四次分手
 
 ![img](https://images0.cnblogs.com/blog2015/545411/201505/231512425935841.png)
 
-![image-20220316122234886](C:\Users\HUAWEI\AppData\Roaming\Typora\typora-user-images\image-20220316122234886.png)
+![image-20220505142401336](/Users/guanyifang/Library/Application Support/typora-user-images/image-20220505142401336.png)
 
 # 3. HTTP的几种请求方法用途
 

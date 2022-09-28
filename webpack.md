@@ -525,3 +525,73 @@ webpack中实现代码分割，两种方式
 
 - `webpack` 是一个模块打包的工具，可以使用 `webpack` 管理模块依赖，并编译输出模块所需要的静态文件。能够很好地管理、打包 `web` 开发中所用到地 `HTML ` 、`JavaScript` 、`css` 以及各种静态文件（图片，字体等），让开发过程更加高效。对于不同类型的资源，`webpack` 有对应的模块加载器。`webpack` 模块打包器会分析模块间的依赖关系，最后生成了优化且合并后的静态资源
 
+
+
+# 2. 打包体积 优化思路
+
+- 提取第三方库或通过引用外部文件的方式引入第三方库
+- 代码压缩插件 `UglifyJsPlugin`
+- 服务器启用 `gzip` 压缩
+- 按需加载资源文件 `require.ensure`
+- 优化 `devtool` 中的 `source-map`
+- 剥离 `css` 文件，单独打包
+- 去除不必要插件，通常就是开发环境与生产环境用同一套配置文件导致
+
+
+
+# 3. 打包效率
+
+- 开发环境采用增量构建，启动热更新
+- 开发环境不做无意义的工作，如提取 `css` 计算文件 `hash` 等
+- 配置 `devtool`
+- 选择合适的 `loader`
+- 个别 `loader` 开启 `cache` 和 `babel-loader`
+- 第三方库采用引入方式
+- 提取公共代码
+- 优化构建时的搜索路径，指明需要构建目录及不需要构建目录
+- 模块化引入需要的部分
+
+
+
+# 4. loader
+
+编写一个 `loader`
+
+> `loader` 就是一个 `node` 模块，他输出一个函数。当某些资源需要用这个 `loader` 转换时，这个函数会被调用。并且，这个函数可以通过提供给它的 `this` 上下文访问 `loader API` 。 ``
+
+reverse-txt-loader
+
+```js
+// 定义
+module.exports = function(src){
+    var result = src.split('').reverse().join('')
+    return `module.exports = '${result}'`
+}
+
+// 使用
+{
+    test:/\.txt$/,
+    use:[
+        {
+            './path/reverse-txt-loader'
+        }
+    ]
+}
+```
+
+
+
+# 5. 说一下webpack的一些plugin，怎么使用webpack对项目进行优化
+
+**构建优化**
+
+- 减少编译体积 `ContextReplacementPugin`、`IgnorePlugin`、`babel-plugin-import`、`babel-plugin-transform-runtime`
+- 并行编译 `happypack`、`thread-loader`、`uglifyjsWebpackPlugin`开启并行
+- 缓存 `cache-loader`、`hard-source-webpack-plugin`、`uglifyjsWebpackPlugin`开启缓存、`babel-loader`开启缓存
+- 预编译 `dllWebpackPlugin && DllReferencePlugin`、`auto-dll-webapck-plugin`
+
+**性能优化**
+
+- 减少编译体积 `Tree-shaking`、`Scope Hositing`
+- `hash`缓存 `webpack-md5-plugin`
+- 拆包 `splitChunksPlugin`、`import()`、`require.ensure`
